@@ -5,25 +5,25 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 
-const Movie = ({ params }) => {
+const TvShow = ({ params }) => {
   const { id } = React.use(params);
-  const [movie, setMovie] = useState({});
+  const [tvShow, setTvShow] = useState({});
   const [genres, setGenres] = useState([]);
   const [similars, setSimilars] = useState([]);
   const [trailerKey, setTrailerKey] = useState("");
   const [similarLoading, setSimilarLoading] = useState(false);
   const router = useRouter();
 
-  const getMovie = async () => {
+  const getTvShow = async () => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_IP_URL}/movie/${id}/details?lang=en`
+        `${process.env.NEXT_PUBLIC_IP_URL}/tv/${id}/details?lang=en`
       );
 
       if (response.ok) {
         const resData = await response.json();
         console.log(resData.content);
-        setMovie(resData.content);
+        setTvShow(resData.content);
         setGenres(resData.content.genres);
       }
     } catch (error) {
@@ -35,7 +35,7 @@ const Movie = ({ params }) => {
     try {
       const token = Cookies.get("token");
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_IP_URL}/movie/${id}/trailers?lang=en`,
+        `${process.env.NEXT_PUBLIC_IP_URL}/tv/${id}/trailers?lang=en`,
         {
           method: "GET",
           headers: {
@@ -61,7 +61,7 @@ const Movie = ({ params }) => {
       setSimilarLoading(true);
       const token = Cookies.get("token");
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_IP_URL}/movie/${id}/similar?lang=en&count=7`,
+        `${process.env.NEXT_PUBLIC_IP_URL}/tv/${id}/similar?lang=en&count=7`,
         {
           method: "GET",
           headers: {
@@ -82,7 +82,7 @@ const Movie = ({ params }) => {
   };
 
   useEffect(() => {
-    getMovie();
+    getTvShow();
     getTrailer();
     getSimilar();
   }, []);
@@ -113,9 +113,9 @@ const Movie = ({ params }) => {
         )}
       </div>
       <div className="px-[40px] py-[20px]">
-        {movie?.title && (
+        {tvShow?.name && (
           <h1 className="text-[36px] leading-[40px] text-white font-normal">
-            {movie?.title}
+            {tvShow?.name}
           </h1>
         )}
         <div className="flex flex-row justify-start items-center gap-[10px] mt-[20px]">
@@ -133,14 +133,14 @@ const Movie = ({ params }) => {
               )
           )}
         </div>
-        {movie?.overview && (
+        {tvShow?.overview && (
           <p className="mt-[20px] font-normal text-white text-[16px] leading-[24px]">
-            {movie?.overview}
+            {tvShow?.overview}
           </p>
         )}
         {similars && similars?.length > 0 && (
           <h2 className="font-normal text-[24px] leading-[32px] text-white mt-[40px]">
-            Similar Movies
+            Similar Tv Shows
           </h2>
         )}
         <div className="grid grid-cols-7 gap-[15px] mt-[10px] w-full h-fit">
@@ -154,7 +154,7 @@ const Movie = ({ params }) => {
                   <img
                     src={
                       similar?.poster_path
-                        ? `${process.env.NEXT_PUBLIC_BASE_IMAGE_URL}${similar?.poster_path}`
+                        ? `${process.env.NEXT_PUBLIC_BASE_IMAGE_URL}${similar?.poster_path}}`
                         : "/images/defaultPoster.png"
                     }
                     alt={similar?.title}
@@ -169,4 +169,4 @@ const Movie = ({ params }) => {
   );
 };
 
-export default Movie;
+export default TvShow;

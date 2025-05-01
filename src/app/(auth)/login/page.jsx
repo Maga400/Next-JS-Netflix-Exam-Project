@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import LanguageSelector from "@/components/LanguageSelector";
 import { toast } from "react-hot-toast";
+import Cookie from "js-cookie";
 
 const Login = () => {
   const router = useRouter();
@@ -10,19 +11,22 @@ const Login = () => {
 
   const login = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_IP_URL}/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_IP_URL}/auth/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
       const resData = await response.json();
 
       if (response.ok) {
-        // await AsyncStorage.setItem("token", data.token);
-        // await AsyncStorage.setItem("password", formData.password);
+        Cookie.set("password", resData.password, { expires: 7, path: "/" });
+        Cookie.set("token", resData.token, { expires: 7, path: "/" });
         router.push("/home");
       } else {
         toast.error(resData.message || "Something Went Wrong");

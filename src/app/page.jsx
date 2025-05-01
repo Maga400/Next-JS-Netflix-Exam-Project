@@ -226,24 +226,38 @@ const Landing = () => {
 
           <div className="mt-[20px] grid grid-cols-5 gap-[10px] md:gap-[15px] xl:gap-[20px]">
             {type === "movie" &&
-              movies.map((trend) => (
-                <div key={trend.id} className="w-full">
-                  <img
-                    src={`${process.env.NEXT_PUBLIC_BASE_IMAGE_URL}${trend.poster_path}`}
-                    className="w-fit h-fit rounded-[10px]"
-                  />
-                </div>
-              ))}
+              movies?.map(
+                (movie) =>
+                  movie && (
+                    <div key={movie?.id} className="w-full">
+                      <img
+                        src={
+                          movie?.poster_path
+                            ? `${process.env.NEXT_PUBLIC_BASE_IMAGE_URL}${movie?.poster_path}`
+                            : "/images/defaultPoster.png"
+                        }
+                        className="w-fit h-fit rounded-[10px]"
+                      />
+                    </div>
+                  )
+              )}
 
             {type === "tv" &&
-              tvShows.map((trend) => (
-                <div key={trend.id} className="w-full">
-                  <img
-                    src={`${process.env.NEXT_PUBLIC_BASE_IMAGE_URL}${trend.poster_path}`}
-                    className="w-fit h-fit rounded-[10px]"
-                  />
-                </div>
-              ))}
+              tvShows?.map(
+                (tvShow) =>
+                  tvShow && (
+                    <div key={tvShow?.id} className="w-full">
+                      <img
+                        src={
+                          tvShow?.poster_path
+                            ? `${process.env.NEXT_PUBLIC_BASE_IMAGE_URL}${tvShow?.poster_path}`
+                            : "/images/defaultPoster.png"
+                        }
+                        className="w-fit h-fit rounded-[10px]"
+                      />
+                    </div>
+                  )
+              )}
           </div>
         </div>
 
