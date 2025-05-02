@@ -11,13 +11,18 @@ export function middleware(request: NextRequest) {
     pathname.startsWith(route)
   );
 
+  // if (pathname === "/" && token) {
+  //   return NextResponse.redirect(new URL("/home", request.url));
+  // }
+
   if (isProtected && !token) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
+
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/home/:path*', '/movies/:path*', '/tv-shows/:path*'],
+  matcher: ['/','/home/:path*', '/movies/:path*', '/tv-shows/:path*'],
 };

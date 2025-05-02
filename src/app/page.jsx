@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import LanguageSelector from "@/components/LanguageSelector";
 import { AnimatePresence, motion } from "framer-motion";
 import { FaPlus, FaTimes } from "react-icons/fa";
+import Loading from "../components/Loading";
 
 const Landing = () => {
   const cards = [
@@ -225,7 +226,10 @@ const Landing = () => {
           </div>
 
           <div className="mt-[20px] grid grid-cols-5 gap-[10px] md:gap-[15px] xl:gap-[20px]">
-            {type === "movie" &&
+            {loading ? (
+              <Loading />
+            ) : (
+              type === "movie" &&
               movies?.map(
                 (movie) =>
                   movie && (
@@ -240,9 +244,13 @@ const Landing = () => {
                       />
                     </div>
                   )
-              )}
+              )
+            )}
 
-            {type === "tv" &&
+            {tvLoading ? (
+              <Loading />
+            ) : (
+              type === "tv" &&
               tvShows?.map(
                 (tvShow) =>
                   tvShow && (
@@ -257,7 +265,8 @@ const Landing = () => {
                       />
                     </div>
                   )
-              )}
+              )
+            )}
           </div>
         </div>
 

@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import { useRouter } from "next/navigation";
+import Loading from "@/components/Loading";
 
 const TvShows = () => {
   const router = useRouter();
@@ -35,6 +36,14 @@ const TvShows = () => {
   useEffect(() => {
     getAllTvShows(page);
   }, []);
+
+  if(isLoading) {
+    return (
+      <div className="bg-black w-full min-h-screen px-[90px] py-[30px] flex items-center justify-center">
+        <Loading />
+      </div>
+    );
+  }
 
   return (
     <div className="bg-black w-full min-h-screen px-[90px] py-[30px] flex flex-col">
