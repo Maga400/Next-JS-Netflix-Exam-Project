@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import { useRouter } from "next/navigation";
 import Loading from "@/components/Loading";
+import { useThemeStore } from "../../../store/themeStore";
 
 const TvShows = () => {
   const router = useRouter();
@@ -10,6 +11,7 @@ const TvShows = () => {
   const [tvShows, setTvShows] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const theme = useThemeStore((state) => state.theme);
 
   const getAllTvShows = async (page = 1) => {
     setIsLoading(true);
@@ -39,14 +41,16 @@ const TvShows = () => {
 
   if(isLoading) {
     return (
-      <div className="bg-black w-full min-h-screen px-[90px] py-[30px] flex items-center justify-center">
+      <div className="w-full min-h-screen px-[90px] py-[30px] flex items-center justify-center">
         <Loading />
       </div>
     );
   }
 
   return (
-    <div className="bg-black w-full min-h-screen px-[90px] py-[30px] flex flex-col">
+    <div className={`${
+      theme ? "bg-black text-white" : "bg-white text-black"
+    } w-full min-h-screen px-4 py-6 sm:px-6 sm:py-8 md:px-12 md:py-10 lg:px-20 lg:py-12 xl:px-[90px] xl:py-[30px] flex flex-col`}>
       <Header />
       <div className="grid grid-cols-5 gap-[50px] mt-[50px] w-full h-fit">
         {tvShows?.map(

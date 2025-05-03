@@ -1,10 +1,12 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import { useThemeStore } from "../../store/themeStore";
 
 export default function LanguageSelector() {
   const [language, setLanguage] = useState("en");
   const [path, setPath] = useState(false);
   const selectRef = useRef(null);
+  const theme = useThemeStore((state) => state.theme);
 
   const handleLanguageChange = (e) => {
     setLanguage(e.target.value);
@@ -25,7 +27,7 @@ export default function LanguageSelector() {
   }, []);
 
   return (
-    <div ref={selectRef} className="relative">
+    <div ref={selectRef} className="relative ml-[10px] md:ml-[15px] xl:ml-[20px]">
       <img
         src="/icons/lang-icon.svg"
         alt="lang-icon"
@@ -36,7 +38,7 @@ export default function LanguageSelector() {
         value={language}
         onClick={() => setPath((prev) => !prev)}
         onChange={handleLanguageChange}
-        className="w-[120px] md:w-[140px] xl:w-[180px] appearance-none bg-[#27272A] text-white text-[10px] md:text-[12px] xl:text-[14px] leading-[16px] md:leading-[20px] xl:leading-[24px] border-[1px] border-[#A1A1AA] py-[5px] md:py-[6px] xl:py-[7px] pl-[25px] md:pl-[30px] xl:pl-[40px] rounded-[5px] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        className={`w-[120px] md:w-[140px] xl:w-[180px] appearance-none ${theme ? "bg-[#27272A]" : "bg-[#636366]"} text-white text-[10px] md:text-[12px] xl:text-[14px] leading-[16px] md:leading-[20px] xl:leading-[24px] border-[1px] border-[#A1A1AA] py-[5px] md:py-[6px] xl:py-[7px] pl-[25px] md:pl-[30px] xl:pl-[40px] rounded-[5px] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
       >
         <option value="az">Azərbaycan dili</option>
         <option value="en">English</option>

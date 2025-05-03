@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import { useRouter } from "next/navigation";
 import Loading from "@/components/Loading";
+import { useThemeStore } from "../../../store/themeStore";
 
 const Movies = () => {
   const router = useRouter();
@@ -10,6 +11,7 @@ const Movies = () => {
   const [movies, setMovies] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const theme = useThemeStore((state) => state.theme);
 
   const getAllMovies = async (page = 1) => {
     setIsLoading(true);
@@ -37,16 +39,24 @@ const Movies = () => {
     getAllMovies(page);
   }, []);
 
-  if(isLoading){
+  if (isLoading) {
     return (
-      <div className="bg-black w-full min-h-screen px-[90px] py-[30px] flex items-center justify-center">
+      <div className="w-full min-h-screen px-[90px] py-[30px] flex items-center justify-center">
         <Loading />
       </div>
     );
   }
 
   return (
-    <div className="bg-black w-full min-h-screen px-[90px] py-[30px]">
+    <div
+      className={`${
+        theme ? "bg-black text-white" : "bg-white text-black"
+      } w-full min-h-screen px-4 py-6 
+          sm:px-6 sm:py-8 
+          md:px-12 md:py-10 
+          lg:px-20 lg:py-12 
+          xl:px-[90px] xl:py-[30px] `}
+    >
       <Header />
       <div className="grid grid-cols-5 gap-[50px] mt-[50px] w-full h-fit">
         {movies?.map(
@@ -57,9 +67,11 @@ const Movies = () => {
                 key={movie?.id}
               >
                 <img
-                  src={movie?.poster_path ? `${process.env.NEXT_PUBLIC_BASE_IMAGE_URL}${
+                  src={
                     movie?.poster_path
-                  }`:"/images/defaultPoster.png"}
+                      ? `${process.env.NEXT_PUBLIC_BASE_IMAGE_URL}${movie?.poster_path}`
+                      : "/images/defaultPoster.png"
+                  }
                   alt={movie?.title}
                   className="w-full h-full object-cover rounded-[10px] border-[1px] border-[white]"
                 />

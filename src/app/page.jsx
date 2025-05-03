@@ -5,6 +5,8 @@ import LanguageSelector from "@/components/LanguageSelector";
 import { AnimatePresence, motion } from "framer-motion";
 import { FaPlus, FaTimes } from "react-icons/fa";
 import Loading from "../components/Loading";
+import ThemeToggle from "@/components/ThemeToggle";
+import { useThemeStore } from "../../store/themeStore";
 
 const Landing = () => {
   const cards = [
@@ -85,6 +87,7 @@ const Landing = () => {
   const [selected, setSelected] = useState(null);
   const [path, setPath] = useState(false);
   const selectRef = useRef(null);
+  const theme = useThemeStore((state) => state.theme);
 
   const getTrendingMovies = async () => {
     setLoading(true);
@@ -143,14 +146,22 @@ const Landing = () => {
   }, [type]);
 
   return (
-    <div className="bg-black w-full h-screen">
+    <div
+      className={`${
+        theme ? "bg-black text-white" : "bg-white text-black"
+      } w-full h-screen`}
+    >
       <div className="relative flex flex-col justify-center items-center">
         <img
           src="/images/Background.jpg"
           alt="Background"
           className="w-full h-[700px] object-cover"
         />
-        <div className="bg-[#000000B2] w-full h-[700px] absolute"></div>
+        <div
+          className={`${
+            theme ? "bg-[#000000B2]" : "bg-[#00000080]"
+          } w-full h-[700px] absolute`}
+        ></div>
         <div className="w-full flex flex-row justify-between items-center absolute top-[20px] px-[20px] md:px-[50px] xl:px-[140px]">
           <img
             src="/icons/netflix-logo.png"
@@ -158,11 +169,12 @@ const Landing = () => {
             className="w-[100px] md:w-[130px] xl:w-[160px] h-[30px] md:h-[40px] xl:h-[50px]"
           />
 
-          <div className="xl:mt-[10px] flex flex-row ">
+          <div className="xl:mt-[10px] flex flex-row justify-between items-center">
+            <ThemeToggle />
             <LanguageSelector />
             <button
               onClick={() => router.push("/login")}
-              className="bg-[#E50914] ml-[10px] rounded-[5px] py-[5px] md:py-[6px] xl:py-[7px] px-[15px] md:px-[18px] xl:px-[20px] text-[11px] md:text-[13px] xl:text-[14px] leading-[18px] xl:leading-[20px] font-medium xl:font-semibold text-white hover:cursor-pointer"
+              className="w-fit h-fit bg-[#E50914] ml-[10px] rounded-[5px] py-[5px] md:py-[8px] xl:py-[9px] px-[15px] md:px-[18px] xl:px-[20px] text-[11px] md:text-[13px] xl:text-[14px] leading-[18px] xl:leading-[20px] font-medium xl:font-semibold text-white hover:cursor-pointer"
             >
               Sign In
             </button>
@@ -202,8 +214,12 @@ const Landing = () => {
           className="w-full h-[25px] xl:h-fit absolute bottom-[0px]"
         />
       </div>
-      <div className="bg-black pt-[60px] xl:pt-[80px] pb-[40px] px-[20px] md:px-[50px] xl:px-[140px]">
-        <h3 className="font-semibold text-[20px] md:text-[22px] xl:text-[24px] leading-[24px] md:leading-[28px] xl:leading-[32px] text-white">
+      <div
+        className={`${
+          theme ? "bg-black text-white" : "bg-white text-black"
+        } pt-[60px] xl:pt-[80px] pb-[40px] px-[20px] md:px-[50px] xl:px-[140px]`}
+      >
+        <h3 className="font-semibold text-[20px] md:text-[22px] xl:text-[24px] leading-[24px] md:leading-[28px] xl:leading-[32px] ">
           Trending Now
         </h3>
 
@@ -212,7 +228,11 @@ const Landing = () => {
             <select
               onClick={() => setPath((prev) => !prev)}
               onChange={(e) => setType(e.target.value)}
-              className="w-full bg-[#27272A] appearance-none text-white text-[12px] md:text-[13px] xl:text-[14px] leading-[16px] md:leading-[20px] xl:leading-[24px] border-[1px] border-[#A1A1AA] py-[8px] md:py-[9px] xl:py-[10px] px-[10px] rounded-[5px] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className={`w-full ${
+                theme
+                  ? "bg-[#27272A] border-[#A1A1AA]"
+                  : "bg-[#636366] border-black"
+              } text-white appearance-none text-[12px] md:text-[13px] xl:text-[14px] leading-[16px] md:leading-[20px] xl:leading-[24px] border-[1px] py-[8px] md:py-[9px] xl:py-[10px] px-[10px] rounded-[5px] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
             >
               <option value="movie">Movie</option>
               <option value="tv">Tv Shows</option>
@@ -270,7 +290,7 @@ const Landing = () => {
           </div>
         </div>
 
-        <h3 className="text-[20px] md:text-[22px] xl:text-[24px] leading-[28px] md:leading-[32px] xl:leading-[36px] font-bold mt-[80px] text-white">
+        <h3 className="mt-[20px] text-[20px] md:text-[22px] xl:text-[24px] leading-[28px] md:leading-[32px] xl:leading-[36px] font-bold mt-[80px">
           More Reasons to Join
         </h3>
 
@@ -280,7 +300,7 @@ const Landing = () => {
               key={card.id}
               className="bg-[#192247] rounded-[10px] flex flex-col justify-between px-[14px] md:px-[15px] xl:px-[15px] py-[15px] md:py-[18px] xl:py-[20px]"
             >
-              <h3 className="font-bold text-[20px] md:text-[22px] xl:text-[24px] leading-[24px] md:leading-[28px] xl:leading-[32px] text-white text-start">
+              <h3 className="text-white font-bold text-[20px] md:text-[22px] xl:text-[24px] leading-[24px] md:leading-[28px] xl:leading-[32px] text-start">
                 {card.title}
               </h3>
               <p className="text-[#FFFFFFB2] text-[12px] md:text-[14px] xl:text-[16px] leading-[16px] md:leading-[20px] xl:leading-[24px] font-normal text-start mt-[15px]">
@@ -296,7 +316,7 @@ const Landing = () => {
             </div>
           ))}
         </div>
-        <div className="bg-black text-white py-12 w-full">
+        <div className="py-12 w-full">
           <h2 className="text-2xl md:text-3xl font-bold mb-6">
             Frequently Asked Questions
           </h2>
@@ -305,7 +325,7 @@ const Landing = () => {
             {questions.map((item, i) => (
               <div
                 key={i}
-                className="bg-[#1f1f1f] rounded-xl shadow-md transition-all"
+                className="bg-[#1f1f1f] text-white rounded-xl shadow-md transition-all"
               >
                 <button
                   className="w-full flex justify-between items-center px-6 py-4 text-left focus:outline-none"
@@ -345,35 +365,12 @@ const Landing = () => {
             ))}
           </div>
         </div>
-        {/* <div className="bg-black px-[20px] md:px-[50px] xl:px-[140px] py-[80px]">
-          <h3 className="text-[24px] font-bold mb-[20px]">
-            Frequently Asked Questions
-          </h3>
-
-          <div className="space-y-4">
-            {questions.map((q, index) => (
-              <div key={index}>
-                <button
-                  onClick={() =>
-                    setSelectedQuestionIndex(
-                      selectedQuestionIndex === index ? null : index
-                    )
-                  }
-                  className="w-full text-left bg-[#1f2937] px-4 py-3 rounded text-[18px] font-medium hover:bg-[#374151] transition"
-                >
-                  {q.question}
-                </button>
-                {selectedQuestionIndex === index && (
-                  <p className="mt-2 px-4 text-[16px] text-[#d1d5db]">
-                    {q.answer}
-                  </p>
-                )}
-              </div>
-            ))}
-          </div>
-        </div> */}
-        <div className="mt-[150px] grid grid-cols-4 gap-[30px]">
-          <div className="flex flex-col text-[10px] md:text-[12px] xl:text-[14px] leading-[16px] md:leading-[18px] xl:leading-[20px] text-[#FFFFFFB2] font-normal">
+        <div
+          className={`mt-[150px] grid grid-cols-4 ${
+            theme ? "text-[#FFFFFFB2]" : "text-black"
+          } gap-[30px]`}
+        >
+          <div className="flex flex-col text-[10px] md:text-[12px] xl:text-[14px] leading-[16px] md:leading-[18px] xl:leading-[20px] font-normal">
             <h3 className="underline">FAQ</h3>
             <h3 className="underline mt-[10px]">Legal Notices</h3>
             <h3 className="underline mt-[10px]">Corporate Information</h3>
@@ -381,7 +378,7 @@ const Landing = () => {
             <h3 className="underline mt-[10px]">Privacy</h3>
           </div>
 
-          <div className="flex flex-col text-[10px] md:text-[12px] xl:text-[14px] leading-[16px] md:leading-[18px] xl:leading-[20px] text-[#FFFFFFB2] font-normal">
+          <div className="flex flex-col text-[10px] md:text-[12px] xl:text-[14px] leading-[16px] md:leading-[18px] xl:leading-[20px] font-normal">
             <h3 className="underline">Investor Relations</h3>
             <h3 className="underline mt-[10px]">Help Center</h3>
             <h3 className="underline mt-[10px]">Only on Netflix</h3>
@@ -389,7 +386,7 @@ const Landing = () => {
             <h3 className="underline mt-[10px]">Speed Test</h3>
           </div>
 
-          <div className="flex flex-col text-[10px] md:text-[12px] xl:text-[14px] leading-[16px] md:leading-[18px] xl:leading-[20px] text-[#FFFFFFB2] font-normal">
+          <div className="flex flex-col text-[10px] md:text-[12px] xl:text-[14px] leading-[16px] md:leading-[18px] xl:leading-[20px] font-normal">
             <h3 className="underline">Buy Gift Cards</h3>
             <h3 className="underline mt-[10px]">Jobs</h3>
             <h3 className="underline mt-[10px]">Account</h3>
@@ -399,7 +396,7 @@ const Landing = () => {
             </h3>
           </div>
 
-          <div className="flex flex-col text-[10px] md:text-[12px] xl:text-[14px] leading-[16px] md:leading-[18px] xl:leading-[20px] text-[#FFFFFFB2] font-normal">
+          <div className="flex flex-col text-[10px] md:text-[12px] xl:text-[14px] leading-[16px] md:leading-[18px] xl:leading-[20px] font-normal">
             <h3 className="underline">Cookie Preferences</h3>
             <h3 className="underline mt-[10px]">Ways to Watch</h3>
             <h3 className="underline mt-[10px]">Netflix Shop</h3>
@@ -408,9 +405,7 @@ const Landing = () => {
           </div>
         </div>
         <div className="w-fit mt-[40px] mb-[30px] py-[5px] px-[30px] border-[1px] border-[#808080B2]">
-          <h3 className="text-[16px] leading-[24px] font-normal text-white">
-            English
-          </h3>
+          <h3 className="text-[16px] leading-[24px] font-normal">English</h3>
         </div>
       </div>
     </div>

@@ -33,3 +33,7 @@ body {
   -ms-overflow-style: none; /* IE və Edge */
   scrollbar-width: none; /* Firefox */
 }
+
+.svg-icon {
+  fill: black; /* Siyah renkte ikonu göstermek için */
+}

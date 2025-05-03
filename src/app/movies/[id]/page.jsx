@@ -5,6 +5,9 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRightCircle, ArrowLeftCircle } from "lucide-react";
 import Loading from "@/components/Loading";
+import LanguageSelector from "@/components/LanguageSelector";
+import ThemeToggle from "@/components/ThemeToggle";
+import { useThemeStore } from "../../../../store/themeStore";
 
 const Movie = ({ params }) => {
   const { id } = React.use(params);
@@ -17,6 +20,7 @@ const Movie = ({ params }) => {
   const [trailerLoading, setTrailerLoading] = useState(false);
   const router = useRouter();
   const scrollRef = useRef(null);
+  const theme = useThemeStore((state) => state.theme);
 
   const scrollLeft = () => {
     scrollRef.current.scrollBy({ left: -300, behavior: "smooth" });
@@ -101,15 +105,27 @@ const Movie = ({ params }) => {
   }, []);
 
   return (
-    <div className="bg-black w-full min-h-screen">
-      <div className="pt-[20px] md:pt-[25px] xl:pt-[30px] ml-[20px] md:ml-[60px] xl:ml-[40px]">
+    <div
+      className={`${
+        theme ? "bg-black text-white" : "bg-white text-black"
+      } w-full min-h-screen`}
+    >
+      <div className="flex flex-row justify-between pt-[20px] md:pt-[25px] xl:pt-[30px] mx-[20px] md:mx-[60px] xl:mx-[40px]">
         <button
           onClick={() => router.back()}
-          className="flex items-center gap-2 bg-[#1F1F1F] hover:bg-[#2a2a2a] text-white px-4 py-2 rounded-full shadow-md transition-all duration-200"
+          className={`flex items-center gap-2 px-4 py-2 rounded-full shadow-md transition-all duration-200 hover:cursor-pointer ${
+            theme
+              ? "bg-[#1F1F1F] hover:bg-[#2a2a2a] text-white"
+              : "bg-gray-200 hover:bg-gray-300 text-black"
+          }`}
         >
           <ArrowLeft size={20} />
           <span className="text-[14px] md:text-[16px]">Go Back</span>
         </button>
+        <div className="flex flex-row justify-between items-center">
+          <ThemeToggle />
+          <LanguageSelector />
+        </div>
       </div>
 
       {/* Trailer */}
@@ -141,7 +157,7 @@ const Movie = ({ params }) => {
         ) : (
           <>
             {movie?.title && (
-              <h1 className="text-[26px] md:text-[32px] xl:text-[36px] text-white font-normal">
+              <h1 className="text-[26px] md:text-[32px] xl:text-[36px] font-normal">
                 {movie?.title}
               </h1>
             )}
@@ -152,9 +168,13 @@ const Movie = ({ params }) => {
                   genre && (
                     <div
                       key={genre?.id}
-                      className="bg-[#27272A] rounded-[5px] py-[10px] md:py-[12px] px-[15px] md:px-[20px]"
+                      className={`rounded-[5px] py-[10px] md:py-[12px] px-[15px] md:px-[20px] ${
+                        theme
+                          ? "bg-[#27272A] text-white"
+                          : "bg-[#e4e4e7] text-black"
+                      }`}
                     >
-                      <h4 className="text-[14px] md:text-[16px] text-white font-normal">
+                      <h4 className="text-[14px] md:text-[16px] font-normal">
                         {genre?.name}
                       </h4>
                     </div>
@@ -163,7 +183,7 @@ const Movie = ({ params }) => {
             </div>
 
             {movie?.overview && (
-              <p className="mt-[20px] text-white text-[15px] md:text-[16px] leading-[24px] font-normal">
+              <p className="mt-[20px] text-[15px] md:text-[16px] leading-[24px] font-normal">
                 {movie?.overview}
               </p>
             )}
@@ -172,7 +192,7 @@ const Movie = ({ params }) => {
 
         {/* Similar Movies */}
         <div className="mt-[40px]">
-          <h2 className="text-white text-[20px] md:text-[22px] xl:text-[24px] font-normal mb-3">
+          <h2 className="text-[20px] md:text-[22px] xl:text-[24px] font-normal mb-3">
             Similar Movies
           </h2>
 
@@ -182,12 +202,22 @@ const Movie = ({ params }) => {
             </div>
           ) : similars && similars.length > 0 ? (
             <>
-              <div className="flex xl:hidden justify-between items-center mb-2">
-                <button onClick={scrollLeft}>
-                  <ArrowLeftCircle size={32} className="text-white" />
+              <div className="flex xl:hidden justify-between items-center mb-2 px-2">
+                <button
+                  onClick={scrollLeft}
+                  className={`rounded-full p-2 ${
+                    theme ? "bg-[#27272A] text-white" : "bg-gray-200 text-black"
+                  }`}
+                >
+                  <ArrowLeftCircle size={28} />
                 </button>
-                <button onClick={scrollRight}>
-                  <ArrowRightCircle size={32} className="text-white" />
+                <button
+                  onClick={scrollRight}
+                  className={`rounded-full p-2 ${
+                    theme ? "bg-[#27272A] text-white" : "bg-gray-200 text-black"
+                  }`}
+                >
+                  <ArrowRightCircle size={28} />
                 </button>
               </div>
 
@@ -205,7 +235,9 @@ const Movie = ({ params }) => {
                           : "/images/defaultPoster.png"
                       }
                       alt={similar.title}
-                      className="w-full h-full object-cover rounded-[10px] border-[1px] border-white"
+                      className={`w-full h-full object-cover rounded-[10px] border-[1px] ${
+                        theme ? "border-white" : "border-gray-700"
+                      }`}
                     />
                   </div>
                 ))}
@@ -213,12 +245,18 @@ const Movie = ({ params }) => {
 
               <div
                 ref={scrollRef}
-                className="custom-scroll xl:hidden flex gap-[15px] md:gap-[20px] overflow-x-auto whitespace-nowrap scroll-smooth"
+                className={`custom-scroll xl:hidden flex gap-[15px] md:gap-[20px] overflow-x-auto whitespace-nowrap scroll-smooth ${
+                  theme ? "bg-black" : "bg-white"
+                }`}
               >
                 {similars.map((similar) => (
                   <div
                     key={similar.id}
-                    className="flex-shrink-0 w-[160px] md:w-[200px] h-[240px] md:h-[250px] "
+                    className={`flex-shrink-0 w-[160px] md:w-[200px] h-[240px] md:h-[250px] cursor-pointer rounded-[10px] border-[1px] ${
+                      theme
+                        ? "bg-[#1F1F1F] border-white"
+                        : "bg-[#F4F4F5] border-gray-700"
+                    }`}
                     onClick={() => router.push(`/movies/${similar.id}`)}
                   >
                     <img
@@ -228,16 +266,14 @@ const Movie = ({ params }) => {
                           : "/images/defaultPoster.png"
                       }
                       alt={similar.title}
-                      className="w-full h-full object-cover rounded-[10px] border-[1px] border-white"
+                      className="w-full h-full object-cover rounded-[10px]"
                     />
                   </div>
                 ))}
               </div>
             </>
           ) : (
-            <p className="text-white text-[16px] mt-2">
-              No similar movies found.
-            </p>
+            <p className="text-[16px] mt-2">No similar movies found.</p>
           )}
         </div>
       </div>
@@ -245,7 +281,7 @@ const Movie = ({ params }) => {
       <style jsx>{`
         .custom-scroll {
           scrollbar-width: thin;
-          scrollbar-color: #ffffff33 transparent;
+          scrollbar-color: ${theme ? "#ffffff33" : "#00000033"} transparent;
         }
         .custom-scroll::-webkit-scrollbar {
           height: 6px;
@@ -254,11 +290,11 @@ const Movie = ({ params }) => {
           background: transparent;
         }
         .custom-scroll::-webkit-scrollbar-thumb {
-          background-color: #ffffff33;
+          background-color: ${theme ? "#ffffff33" : "#00000033"};
           border-radius: 10px;
         }
         .custom-scroll::-webkit-scrollbar-thumb:hover {
-          background-color: #ffffff55;
+          background-color: ${theme ? "#ffffff55" : "#00000055"};
         }
       `}</style>
     </div>
