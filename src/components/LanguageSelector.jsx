@@ -1,15 +1,28 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { useThemeStore } from "../../store/themeStore";
+import { useTranslations,useLocale } from "next-intl";
+import { useRouter, usePathname } from "next/navigation";
 
 export default function LanguageSelector() {
-  const [language, setLanguage] = useState("en");
+  const t = useTranslations("Language");
+  const locale = useLocale();
   const [path, setPath] = useState(false);
   const selectRef = useRef(null);
   const theme = useThemeStore((state) => state.theme);
+  const router = useRouter();
+  const pathname = usePathname();
+  // const locale = 
 
   const handleLanguageChange = (e) => {
-    setLanguage(e.target.value);
+    const selectedLang = e.target.value;
+
+    // URL yolunu parçalayarak mevcut yolu yeni dile göre değiştiriyoruz
+    const segments = pathname.split("/");
+    segments[1] = selectedLang; // /en/... → /az/...
+
+    const newPath = segments.join("/");
+    router.replace(newPath); // Yeni dildeki sayfaya yönlendir
   };
 
   useEffect(() => {
@@ -20,7 +33,6 @@ export default function LanguageSelector() {
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
@@ -35,16 +47,15 @@ export default function LanguageSelector() {
       />
 
       <select
-        value={language}
+        value={locale}
         onClick={() => setPath((prev) => !prev)}
         onChange={handleLanguageChange}
         className={`w-[120px] md:w-[140px] xl:w-[180px] appearance-none ${theme ? "bg-[#27272A]" : "bg-[#636366]"} text-white text-[10px] md:text-[12px] xl:text-[14px] leading-[16px] md:leading-[20px] xl:leading-[24px] border-[1px] border-[#A1A1AA] py-[5px] md:py-[6px] xl:py-[7px] pl-[25px] md:pl-[30px] xl:pl-[40px] rounded-[5px] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
       >
-        <option value="az">Azərbaycan dili</option>
-        <option value="en">English</option>
-        <option value="fr">Français</option>
-        <option value="de">Deutsch</option>
-        <option value="es">Español</option>
+        <option value="en">{t("english")}</option>
+        <option value="ru">{t("russian")}</option>
+        <option value="de">{t("german")}</option>
+        <option value="az">{t("azerbaijan")}</option>
       </select>
 
       <img

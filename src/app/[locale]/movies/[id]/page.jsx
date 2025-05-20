@@ -3,21 +3,25 @@
 import React, { useEffect, useRef, useState } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ArrowLeftCircle, ArrowRightCircle } from "lucide-react";
+import { ArrowLeft, ArrowRightCircle, ArrowLeftCircle } from "lucide-react";
 import Loading from "@/components/Loading";
 import LanguageSelector from "@/components/LanguageSelector";
 import ThemeToggle from "@/components/ThemeToggle";
-import { useThemeStore } from "../../../../store/themeStore";
+import { useThemeStore } from "../../../../../store/themeStore";
+import { useTranslations, useLocale } from "next-intl";
+import Image from "next/image";
 
-const TvShow = ({ params }) => {
+const Movie = ({ params }) => {
+  const t = useTranslations("Movies");
+  const locale = useLocale();
   const { id } = React.use(params);
-  const [tvShow, setTvShow] = useState({});
+  const [movie, setMovie] = useState({});
   const [genres, setGenres] = useState([]);
   const [similars, setSimilars] = useState([]);
   const [trailerKey, setTrailerKey] = useState("");
-  const [tvShowLoading, setTvShowLoading] = useState(false);
-  const [trailerLoading, setTrailerLoading] = useState(false);
   const [similarLoading, setSimilarLoading] = useState(false);
+  const [movieLoading, setMovieLoading] = useState(false);
+  const [trailerLoading, setTrailerLoading] = useState(false);
   const router = useRouter();
   const scrollRef = useRef(null);
   const theme = useThemeStore((state) => state.theme);
@@ -30,21 +34,21 @@ const TvShow = ({ params }) => {
     scrollRef.current.scrollBy({ left: 300, behavior: "smooth" });
   };
 
-  const getTvShow = async () => {
-    setTvShowLoading(true);
+  const getMovie = async () => {
+    setMovieLoading(true);
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_IP_URL}/tv/${id}/details?lang=en`
+        `${process.env.NEXT_PUBLIC_IP_URL}/Movie/${id}/details?lang=${locale}`
       );
       if (response.ok) {
         const resData = await response.json();
-        setTvShow(resData.content);
+        setMovie(resData.content);
         setGenres(resData.content.genres);
       }
     } catch (error) {
       console.error(error);
     } finally {
-      setTvShowLoading(false);
+      setMovieLoading(false);
     }
   };
 
@@ -53,8 +57,9 @@ const TvShow = ({ params }) => {
     try {
       const token = Cookies.get("token");
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_IP_URL}/tv/${id}/trailers?lang=en`,
+        `${process.env.NEXT_PUBLIC_IP_URL}/Movie/${id}/trailers?lang=${locale}`,
         {
+          method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -78,8 +83,9 @@ const TvShow = ({ params }) => {
     try {
       const token = Cookies.get("token");
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_IP_URL}/tv/${id}/similar?lang=en&count=7`,
+        `${process.env.NEXT_PUBLIC_IP_URL}/Movie/${id}/similar?lang=${locale}&count=7`,
         {
+          method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -97,7 +103,7 @@ const TvShow = ({ params }) => {
   };
 
   useEffect(() => {
-    getTvShow();
+    getMovie();
     getTrailer();
     getSimilar();
   }, []);
@@ -106,19 +112,19 @@ const TvShow = ({ params }) => {
     <div
       className={`${
         theme ? "bg-black text-white" : "bg-white text-black"
-      } w-full min-h-screen transition-colors duration-300`}
+      } w-full min-h-screen`}
     >
-      <div className="flex flex-row justify-between items-center pt-[20px] md:pt-[25px] xl:pt-[30px] mx-[20px] md:mx-[60px] xl:mx-[40px]">
+      <div className="flex flex-row justify-between pt-[20px] md:pt-[25px] xl:pt-[30px] mx-[20px] md:mx-[60px] xl:mx-[40px]">
         <button
-          onClick={() => router.back()}
-          className={`flex items-center gap-2 ${
+          onClick={() => router.push(`/${locale}/movies`)}
+          className={`flex items-center gap-2 px-4 py-2 rounded-full shadow-md transition-all duration-200 hover:cursor-pointer ${
             theme
               ? "bg-[#1F1F1F] hover:bg-[#2a2a2a] text-white"
               : "bg-gray-200 hover:bg-gray-300 text-black"
-          } px-4 py-2 rounded-full shadow-md transition-all duration-200 hover:cursor-pointer`}
+          }`}
         >
           <ArrowLeft size={20} />
-          <span className="text-[14px] md:text-[16px]">Go Back</span>
+          <span className="text-[14px] md:text-[16px]">{t("go_back")}</span>
         </button>
         <div className="flex flex-row justify-between items-center">
           <ThemeToggle />
@@ -126,7 +132,6 @@ const TvShow = ({ params }) => {
         </div>
       </div>
 
-      {/* Trailer */}
       <div className="px-[20px] md:px-[60px] xl:px-[320px] pt-[10px] w-full h-fit">
         {trailerLoading ? (
           <div className="w-full h-[300px] flex items-center justify-center">
@@ -146,17 +151,17 @@ const TvShow = ({ params }) => {
         ) : null}
       </div>
 
-      {/* TV Show Info */}
+      {/* Movie Info */}
       <div className="px-[20px] md:px-[60px] xl:px-[40px] py-[20px]">
-        {tvShowLoading ? (
+        {movieLoading ? (
           <div className="w-full h-[200px] flex items-center justify-center">
             <Loading />
           </div>
         ) : (
           <>
-            {tvShow?.name && (
+            {movie?.title && (
               <h1 className="text-[26px] md:text-[32px] xl:text-[36px] font-normal">
-                {tvShow?.name}
+                {movie?.title}
               </h1>
             )}
 
@@ -169,7 +174,7 @@ const TvShow = ({ params }) => {
                       className={`rounded-[5px] py-[10px] md:py-[12px] px-[15px] md:px-[20px] ${
                         theme
                           ? "bg-[#27272A] text-white"
-                          : "bg-gray-100 text-black"
+                          : "bg-[#e4e4e7] text-black"
                       }`}
                     >
                       <h4 className="text-[14px] md:text-[16px] font-normal">
@@ -180,18 +185,18 @@ const TvShow = ({ params }) => {
               )}
             </div>
 
-            {tvShow?.overview && (
+            {movie?.overview && (
               <p className="mt-[20px] text-[15px] md:text-[16px] leading-[24px] font-normal">
-                {tvShow?.overview}
+                {movie?.overview}
               </p>
             )}
           </>
         )}
 
-        {/* Similar Shows */}
+        {/* Similar Movies */}
         <div className="mt-[40px]">
           <h2 className="text-[20px] md:text-[22px] xl:text-[24px] font-normal mb-3">
-            Similar TV Shows
+            {t("similar_movies")}
           </h2>
 
           {similarLoading ? (
@@ -200,32 +205,26 @@ const TvShow = ({ params }) => {
             </div>
           ) : similars && similars.length > 0 ? (
             <>
-              <div className="flex xl:hidden justify-between items-center mb-2">
-                <button onClick={scrollLeft}>
-                  <ArrowLeftCircle size={32} />
-                </button>
-                <button onClick={scrollRight}>
-                  <ArrowRightCircle size={32} />
-                </button>
-              </div>
-
-              <div className="hidden xl:grid xl:grid-cols-7 gap-[15px]">
+              <div className="hidden xl:grid xl:grid-cols-7 gap-[15px] w-full h-full">
                 {similars.map((similar) => (
                   <div
                     key={similar.id}
-                    onClick={() => router.push(`/tv-shows/${similar.id}`)}
-                    className="cursor-pointer"
+                    onClick={() =>
+                      router.push(`/${locale}/movies/${similar.id}`)
+                    }
+                    className="relative cursor-pointer w-full h-[300px]"
                   >
-                    <img
+                    <Image
                       src={
                         similar.poster_path
                           ? `${process.env.NEXT_PUBLIC_BASE_IMAGE_URL}${similar.poster_path}`
                           : "/images/defaultPoster.png"
                       }
-                      alt={similar.name}
+                      alt={similar.title}
                       className={`w-full h-full object-cover rounded-[10px] border-[1px] ${
                         theme ? "border-white" : "border-gray-700"
                       }`}
+                      fill
                     />
                   </div>
                 ))}
@@ -233,31 +232,47 @@ const TvShow = ({ params }) => {
 
               <div
                 ref={scrollRef}
-                className="custom-scroll xl:hidden flex gap-[15px] md:gap-[20px] overflow-x-auto whitespace-nowrap scroll-smooth"
+                className={`custom-scroll xl:hidden flex gap-[15px] md:gap-[20px] overflow-x-auto whitespace-nowrap scroll-smooth ${
+                  theme ? "bg-black" : "bg-white"
+                }`}
               >
                 {similars.map((similar) => (
                   <div
                     key={similar.id}
-                    className="flex-shrink-0 w-[160px] md:w-[200px] h-[240px] md:h-[250px]"
-                    onClick={() => router.push(`/tv-shows/${similar.id}`)}
+                    className={`relative flex-shrink-0 w-[160px] md:w-[200px] h-[240px] md:h-[250px] cursor-pointer rounded-[10px] border-[1px] ${
+                      theme
+                        ? "bg-[#1F1F1F] border-white"
+                        : "bg-[#F4F4F5] border-gray-700"
+                    }`}
+                    onClick={() =>
+                      router.push(`/${locale}/movies/${similar.id}`)
+                    }
                   >
-                    <img
+                    <Image
                       src={
                         similar.poster_path
                           ? `${process.env.NEXT_PUBLIC_BASE_IMAGE_URL}${similar.poster_path}`
                           : "/images/defaultPoster.png"
                       }
-                      alt={similar.name}
-                      className={`w-full h-full object-cover rounded-[10px] border-[1px] ${
-                        theme ? "border-white" : "border-gray-700"
-                      }`}
+                      alt={similar.title}
+                      className="w-full h-full object-cover rounded-[10px]"
+                      layout="fill"
+                      objectFit="cover"
                     />
                   </div>
                 ))}
               </div>
+              <div className="flex xl:hidden justify-between items-center mt-[20px]">
+                <button onClick={scrollLeft}>
+                  <ArrowLeftCircle size={32} />
+                </button>
+                <button onClick={scrollRight}>
+                  <ArrowRightCircle size={32} />
+                </button>
+              </div>
             </>
           ) : (
-            <p className="text-[16px] mt-2">No similar TV shows found.</p>
+            <p className="text-[16px] mt-2">{t("no_similar_movies_found")}</p>
           )}
         </div>
       </div>
@@ -265,9 +280,7 @@ const TvShow = ({ params }) => {
       <style jsx>{`
         .custom-scroll {
           scrollbar-width: thin;
-          scrollbar-color: ${theme
-            ? "#ffffff33 transparent"
-            : "transparent transparent"};
+          scrollbar-color: ${theme ? "#ffffff33" : "#00000033"} transparent;
         }
         .custom-scroll::-webkit-scrollbar {
           height: 6px;
@@ -276,15 +289,15 @@ const TvShow = ({ params }) => {
           background: transparent;
         }
         .custom-scroll::-webkit-scrollbar-thumb {
-          background-color: ${theme ? "#ffffff33" : "transparent"};
+          background-color: ${theme ? "#ffffff33" : "#00000033"};
           border-radius: 10px;
         }
         .custom-scroll::-webkit-scrollbar-thumb:hover {
-          background-color: ${theme ? "#ffffff55" : "transparent"};
+          background-color: ${theme ? "#ffffff55" : "#00000055"};
         }
       `}</style>
     </div>
   );
 };
 
-export default TvShow;
+export default Movie;

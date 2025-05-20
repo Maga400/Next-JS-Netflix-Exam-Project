@@ -1,80 +1,89 @@
+// export default function HomePage() {
+//   return (
+//     <div>
+//       <h1>{t('title')}</h1>
+//       {/* <Link href="/about">{t('about')}</Link> */}
+//     </div>
+//   );
+// }
+
 "use client";
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import LanguageSelector from "@/components/LanguageSelector";
 import { AnimatePresence, motion } from "framer-motion";
 import { FaPlus, FaTimes } from "react-icons/fa";
-import Loading from "../components/Loading";
+import Loading from "../../components/Loading";
 import ThemeToggle from "@/components/ThemeToggle";
-import { useThemeStore } from "../../store/themeStore";
+import { useThemeStore } from "../../../store/themeStore";
+import { useTranslations, useLocale } from "next-intl";
+import { Link } from "@/i18n/navigation";
+import { toast } from "react-hot-toast";
+
+const getFullLanguageName = (locale) => {
+  return new Intl.DisplayNames([locale], { type: "language" }).of(locale);
+};
 
 const Landing = () => {
+  const t = useTranslations("Landing");
+  const locale = useLocale();
+  const fullName = getFullLanguageName(locale);
+
   const cards = [
     {
       id: 1,
-      title: "Enjoy on your TV",
-      description:
-        "Watch on Smart TVs,Playstation, Xbox,Chromecast, Apple TV, Blu-ray players, and more.",
+      title: t("enjoy_on_your_tv"),
+      description: t("watch"),
       logoPath: "/icons/television.png",
     },
     {
       id: 2,
-      title: "Download your shows to watch offline",
-      description:
-        "Save your favorites easily and always have something to watch.",
+      title: t("download"),
+      description: t("save"),
       logoPath: "/icons/download.png",
     },
     {
       id: 3,
-      title: "Watch everywhere",
-      description:
-        "Stream unlimited movies and TV shows on your phone,tablet, laptop, and TV.",
+      title: t("watch_everywhere"),
+      description: t("stream"),
       logoPath: "/icons/watch.png",
     },
     {
       id: 4,
-      title: "Create profiles for kids",
-      description:
-        "Send kids on adventures with their favorite characters in a space made just for them — free with your membership.",
+      title: t("create_profiles_for_kids"),
+      description: t("send"),
       logoPath: "/icons/profiles.png",
     },
   ];
 
   const questions = [
     {
-      question: "What is Netflix?",
-      answer:
-        "Netflix is a streaming service that offers a wide variety of award-winning TV shows, movies, anime, documentaries, and more.",
+      question: t("what_is_netflix"),
+      answer: t("netflix_streaming"),
     },
     {
-      question: "How much does Netflix cost?",
-      answer:
-        "Watch Netflix on your smartphone, tablet, Smart TV, laptop, or streaming device, all for one fixed monthly fee. Plans range from $6.99 to $19.99 a month.",
+      question: t("how_much_does_netflix_cost"),
+      answer: t("watch_netflix"),
     },
     {
-      question: "Where can I watch?",
-      answer:
-        "You can watch anywhere, anytime. Sign in with your Netflix account to watch instantly on the web at netflix.com from your personal computer or on any internet-connected device.",
+      question: t("where_can_i_watch"),
+      answer: t("you_can_watch"),
     },
     {
-      question: "How do I cancel?",
-      answer:
-        "Netflix is flexible. There are no annoying contracts and no commitments. You can easily cancel your account online in two clicks.",
+      question: t("how_do_i_cancel"),
+      answer: t("netflix_flexible"),
     },
     {
-      question: "What can I watch on Netflix?",
-      answer:
-        "Netflix has an extensive library of feature films, documentaries, TV shows, anime, award-winning Netflix originals, and more.",
+      question: t("what_can_i_watch_on_netflix"),
+      answer: t("netflix_extensive"),
     },
     {
-      question: "Is Netflix good for kids?",
-      answer:
-        "The Netflix Kids experience is included in your membership to give parents control while kids enjoy family-friendly TV shows and movies.",
+      question: t("is_netflix_good_for_kids"),
+      answer: t("netflix_kids"),
     },
     {
-      question: "Why am I seeing this language?",
-      answer:
-        "Your browser language preferences or location determine the default language shown. You can change it in settings.",
+      question: t("why_am_i_seeing_this_language"),
+      answer: t("your_browser"),
     },
   ];
 
@@ -88,14 +97,16 @@ const Landing = () => {
   const [path, setPath] = useState(false);
   const selectRef = useRef(null);
   const theme = useThemeStore((state) => state.theme);
+  const [email, setEmail] = useState("");
 
   const getTrendingMovies = async () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_IP_URL}/movie/trending/1?lang=en&count=5`
+        `${process.env.NEXT_PUBLIC_IP_URL}/Movie/trending/1?lang=${locale}&count=5`
       );
       const data = await response.json();
+      console.log(data.movies);
       setMovies(data.movies);
     } catch (error) {
       console.error(error);
@@ -108,14 +119,25 @@ const Landing = () => {
     setTvLoading(true);
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_IP_URL}/tv/trending/1?lang=en&count=5`
+        `${process.env.NEXT_PUBLIC_IP_URL}/Tv/trending/1?lang=${locale}&count=5`
       );
       const data = await response.json();
+      console.log(data.tvShows);
       setTvShows(data.tvShows);
     } catch (error) {
       console.error(error);
     } finally {
       setTvLoading(false);
+    }
+  };
+
+  const getStarted = () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (email !== "" && emailRegex.test(email)) {
+      router.push(`/${locale}/register?email=${encodeURIComponent(email)}`);
+    } else {
+      toast.error(t("valid_email"));
     }
   };
 
@@ -143,7 +165,7 @@ const Landing = () => {
     } else {
       getTrendingTvShows();
     }
-  }, [type]);
+  }, [type, locale]);
 
   return (
     <div
@@ -173,36 +195,40 @@ const Landing = () => {
             <ThemeToggle />
             <LanguageSelector />
             <button
-              onClick={() => router.push("/login")}
+              onClick={() => router.push(`/${locale}/login`)}
               className="w-fit h-fit bg-[#E50914] ml-[10px] rounded-[5px] py-[5px] md:py-[8px] xl:py-[9px] px-[15px] md:px-[18px] xl:px-[20px] text-[11px] md:text-[13px] xl:text-[14px] leading-[18px] xl:leading-[20px] font-medium xl:font-semibold text-white hover:cursor-pointer"
             >
-              Sign In
+              {t("sign_in")}
             </button>
           </div>
         </div>
         <div className="absolute top-[0px] mt-[140px] xl:mt-[210px] px-[20px] xl:px-[0px] w-full md:w-[600px] xl:w-[700px] flex flex-col items-center">
           <div className="w-full md:w-full xl:w-[610px]">
             <h1 className="font-semibold xl:font-bold text-[30px] xl:text-[60px] leading-[35px] xl:leading-[65px] text-white text-center">
-              Unlimited movies, TV shows, and more
+              {t("unlimited")}
             </h1>
             <h2 className="font-bold mt-[20px] text-[20px] md:text-[22px] xl:text-[25px] leading-[20px] xl:leading-[30px] text-white text-center">
-              Starts at $6.99. Cancel anytime.
+              {t("starts")}
             </h2>
           </div>
           <div className="w-full">
             <h2 className="text-[16px] md:text-[17px] xl:text-[22px] text-white leading-[24px] font-normal mt-[30px] text-center">
-              Ready to watch? Enter your email to create or restart your
-              membership.
+              {t("ready")}
             </h2>
             <div className="w-full flex flex-row mt-[20px]">
               <input
-                placeholder="Enter email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder={t(`enter_email`)}
                 className="w-full xl:w-[490px] border-[1px] border-[#A1A1AA] text-[#9CA3AF] px-[10px] xl:px-[15px] py-[5px] xl:py-[15px] rounded-[5px]"
               />
-              <button className="flex flex-row ml-[10px] bg-[#E50914] rounded-[5px] py-[5px] xl:py-[13px] px-[15px] xl:px-[25px] text-[14px] xl:text-[20px] leading-[20px] xl:leading-[28px] font-medium xl:font-semibold text-white hover:cursor-pointer">
-                Get Started
+              <button
+                onClick={getStarted}
+                className="flex flex-row justify-center items-center ml-[10px] bg-[#E50914] rounded-[5px] py-[5px] xl:py-[13px] px-[20px] xl:px-[25px] text-[14px] xl:text-[19px] leading-[20px] xl:leading-[28px] font-medium xl:font-semibold text-white hover:cursor-pointer"
+              >
+                {t("get_started")}
                 <img
-                  className="w-[30px] h-[30px] ml-[5px] mt-[5px] xl:mt-[0px]"
+                  className="w-[30px] h-[30px] ml-[5px]"
                   src="/icons/right-arrow.svg"
                 />
               </button>
@@ -220,11 +246,11 @@ const Landing = () => {
         } pt-[60px] xl:pt-[80px] pb-[40px] px-[20px] md:px-[50px] xl:px-[140px]`}
       >
         <h3 className="font-semibold text-[20px] md:text-[22px] xl:text-[24px] leading-[24px] md:leading-[28px] xl:leading-[32px] ">
-          Trending Now
+          {t("trending_now")}
         </h3>
 
-        <div className="mt-[15px]">
-          <div ref={selectRef} className="relative w-[120px]">
+        <div className="mt-[20px]">
+          <div ref={selectRef} className="relative w-[130px] md:w-[150px]">
             <select
               onClick={() => setPath((prev) => !prev)}
               onChange={(e) => setType(e.target.value)}
@@ -234,8 +260,8 @@ const Landing = () => {
                   : "bg-[#636366] border-black"
               } text-white appearance-none text-[12px] md:text-[13px] xl:text-[14px] leading-[16px] md:leading-[20px] xl:leading-[24px] border-[1px] py-[8px] md:py-[9px] xl:py-[10px] px-[10px] rounded-[5px] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
             >
-              <option value="movie">Movie</option>
-              <option value="tv">Tv Shows</option>
+              <option value="movie">{t("movie")}</option>
+              <option value="tv">{t("tv_shows")}</option>
             </select>
 
             <img
@@ -245,53 +271,90 @@ const Landing = () => {
             />
           </div>
 
-          <div className="mt-[20px] grid grid-cols-5 gap-[10px] md:gap-[15px] xl:gap-[20px]">
-            {loading ? (
-              <Loading />
-            ) : (
-              type === "movie" &&
-              movies?.map(
-                (movie) =>
-                  movie && (
-                    <div key={movie?.id} className="w-full">
-                      <img
-                        src={
-                          movie?.poster_path
-                            ? `${process.env.NEXT_PUBLIC_BASE_IMAGE_URL}${movie?.poster_path}`
-                            : "/images/defaultPoster.png"
-                        }
-                        className="w-fit h-fit rounded-[10px]"
-                      />
-                    </div>
-                  )
-              )
+          <div className="mt-[50px]">
+            {/* Mobil & Tablet (scrollable) */}
+            {(type === "movie" || type === "tv") && (
+              <div className="xl:hidden">
+                <div className="flex gap-[15px] md:gap-[20px] overflow-x-auto custom-scroll whitespace-nowrap scroll-smooth">
+                  {(type === "movie" ? movies : tvShows)?.map(
+                    (item) =>
+                      item && (
+                        <div
+                          key={item?.id}
+                          className="flex-shrink-0 w-[160px] md:w-[200px] h-[240px] md:h-[250px] cursor-pointer"
+                        >
+                          <img
+                            src={
+                              item?.poster_path || item?.backdrop_path
+                                ? `${process.env.NEXT_PUBLIC_BASE_IMAGE_URL}${
+                                    item?.poster_path || item?.backdrop_path
+                                  }`
+                                : "/images/defaultPoster.png"
+                            }
+                            alt="Poster"
+                            className="w-full h-full object-cover rounded-[10px]"
+                          />
+                        </div>
+                      )
+                  )}
+                </div>
+              </div>
             )}
 
-            {tvLoading ? (
-              <Loading />
-            ) : (
-              type === "tv" &&
-              tvShows?.map(
-                (tvShow) =>
-                  tvShow && (
-                    <div key={tvShow?.id} className="w-full">
+            {/* Desktop (grid) */}
+            <div className="hidden xl:grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mt-[30px]">
+              {(type === "movie" ? movies : tvShows)?.map(
+                (item) =>
+                  item && (
+                    <div key={item?.id} className="w-full">
                       <img
                         src={
-                          tvShow?.poster_path
-                            ? `${process.env.NEXT_PUBLIC_BASE_IMAGE_URL}${tvShow?.poster_path}`
+                          item?.poster_path || item?.backdrop_path
+                            ? `${process.env.NEXT_PUBLIC_BASE_IMAGE_URL}${
+                                item?.poster_path || item?.backdrop_path
+                              }`
                             : "/images/defaultPoster.png"
                         }
-                        className="w-fit h-fit rounded-[10px]"
+                        alt="Poster"
+                        className="w-full h-full object-cover rounded-[10px]"
                       />
                     </div>
                   )
-              )
-            )}
+              )}
+            </div>
+
+            {/* Loading */}
+            {(loading && type === "movie") || (tvLoading && type === "tv") ? (
+              <div className="w-full flex justify-center items-center mt-4">
+                <Loading />
+              </div>
+            ) : null}
+
+            {/* Scrollbar stili */}
+            <style jsx>{`
+              .custom-scroll {
+                scrollbar-width: thin;
+                scrollbar-color: #999 transparent;
+              }
+              .custom-scroll::-webkit-scrollbar {
+                height: 6px;
+              }
+              .custom-scroll::-webkit-scrollbar-track {
+                background: transparent;
+              }
+              .custom-scroll::-webkit-scrollbar-thumb {
+                background-color: #999;
+                border-radius: 10px;
+              }
+              .custom-scroll::-webkit-scrollbar-thumb:hover {
+                background-color: #666;
+              }
+            `}</style>
           </div>
         </div>
 
-        <h3 className="mt-[20px] text-[20px] md:text-[22px] xl:text-[24px] leading-[28px] md:leading-[32px] xl:leading-[36px] font-bold mt-[80px">
-          More Reasons to Join
+        <h3 className="mt-[50px] text-[20px] md:text-[22px] xl:text-[24px] leading-[28px] md:leading-[32px] xl:leading-[36px] font-bold mt-[80px">
+          {t("more_reasons_to_join")}
         </h3>
 
         <div className="grid grid-cols-2 xl:grid-cols-4 gap-[10px] md:gap-[12px] xl:gap-[15px] mt-[20px]">
@@ -318,7 +381,7 @@ const Landing = () => {
         </div>
         <div className="py-12 w-full">
           <h2 className="text-2xl md:text-3xl font-bold mb-6">
-            Frequently Asked Questions
+            {t("frequently_asked_questions")}
           </h2>
 
           <div className="flex flex-col gap-4 w-full">
@@ -371,41 +434,43 @@ const Landing = () => {
           } gap-[30px]`}
         >
           <div className="flex flex-col text-[10px] md:text-[12px] xl:text-[14px] leading-[16px] md:leading-[18px] xl:leading-[20px] font-normal">
-            <h3 className="underline">FAQ</h3>
-            <h3 className="underline mt-[10px]">Legal Notices</h3>
-            <h3 className="underline mt-[10px]">Corporate Information</h3>
-            <h3 className="underline mt-[10px]">Terms of Use</h3>
-            <h3 className="underline mt-[10px]">Privacy</h3>
+            <h3 className="underline">{t("faq")}</h3>
+            <h3 className="underline mt-[10px]">{t("legal_notices")}</h3>
+            <h3 className="underline mt-[10px]">
+              {t("corporate_information")}
+            </h3>
+            <h3 className="underline mt-[10px]">{t("terms_of_use")}</h3>
+            <h3 className="underline mt-[10px]">{t("privacy")}</h3>
           </div>
 
           <div className="flex flex-col text-[10px] md:text-[12px] xl:text-[14px] leading-[16px] md:leading-[18px] xl:leading-[20px] font-normal">
-            <h3 className="underline">Investor Relations</h3>
-            <h3 className="underline mt-[10px]">Help Center</h3>
-            <h3 className="underline mt-[10px]">Only on Netflix</h3>
-            <h3 className="underline mt-[10px]">Contact Us</h3>
-            <h3 className="underline mt-[10px]">Speed Test</h3>
+            <h3 className="underline">{t("investor_relations")}</h3>
+            <h3 className="underline mt-[10px]">{t("help_center")}</h3>
+            <h3 className="underline mt-[10px]">{t("only_on_netflix")}</h3>
+            <h3 className="underline mt-[10px]">{t("contact_us")}</h3>
+            <h3 className="underline mt-[10px]">{t("speed_test")}</h3>
           </div>
 
           <div className="flex flex-col text-[10px] md:text-[12px] xl:text-[14px] leading-[16px] md:leading-[18px] xl:leading-[20px] font-normal">
-            <h3 className="underline">Buy Gift Cards</h3>
-            <h3 className="underline mt-[10px]">Jobs</h3>
-            <h3 className="underline mt-[10px]">Account</h3>
-            <h3 className="underline mt-[10px]">Media Center</h3>
+            <h3 className="underline">{t("buy_gift_cards")}</h3>
+            <h3 className="underline mt-[10px]">J{t("jobs")}</h3>
+            <h3 className="underline mt-[10px]">{t("account")}</h3>
+            <h3 className="underline mt-[10px]">{t("media_center")}</h3>
             <h3 className="underline mt-[10px] w-[100px] md:w-[160px] xl:w-[220px]">
-              Do Not Sell or Share My Personal Information
+              {t("sell")}
             </h3>
           </div>
 
           <div className="flex flex-col text-[10px] md:text-[12px] xl:text-[14px] leading-[16px] md:leading-[18px] xl:leading-[20px] font-normal">
-            <h3 className="underline">Cookie Preferences</h3>
-            <h3 className="underline mt-[10px]">Ways to Watch</h3>
-            <h3 className="underline mt-[10px]">Netflix Shop</h3>
-            <h3 className="underline mt-[10px]">Redeem Gift Cards</h3>
-            <h3 className="underline mt-[10px]">Ad Choices</h3>
+            <h3 className="underline">{t("cookie_preferences")}</h3>
+            <h3 className="underline mt-[10px]">{t("ways_to_watch")}</h3>
+            <h3 className="underline mt-[10px]">{t("netflix_shop")}</h3>
+            <h3 className="underline mt-[10px]">{t("redeem_gift_cards")}</h3>
+            <h3 className="underline mt-[10px]">{t("ad_choices")}</h3>
           </div>
         </div>
         <div className="w-fit mt-[40px] mb-[30px] py-[5px] px-[30px] border-[1px] border-[#808080B2]">
-          <h3 className="text-[16px] leading-[24px] font-normal">English</h3>
+          <h3 className="text-[16px] leading-[24px] font-normal">{fullName}</h3>
         </div>
       </div>
     </div>

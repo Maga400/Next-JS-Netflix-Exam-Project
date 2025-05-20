@@ -1,7 +1,14 @@
-import type { NextConfig } from "next";
+import { NextConfig } from 'next';
+import createNextIntlPlugin from 'next-intl/plugin';
 
+// next-intl eklentisini başlat
+const withNextIntl = createNextIntlPlugin();
+
+// Temel Next.js ayarları
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    domains: ['image.tmdb.org'],
+  },
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);

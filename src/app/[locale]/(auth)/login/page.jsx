@@ -5,17 +5,33 @@ import LanguageSelector from "@/components/LanguageSelector";
 import { toast } from "react-hot-toast";
 import Cookie from "js-cookie";
 import ThemeToggle from "@/components/ThemeToggle";
-import { useThemeStore } from "../../../../store/themeStore";
+import { useThemeStore } from "../../../../../store/themeStore";
+import { useTranslations, useLocale } from "next-intl";
+
+const getFullLanguageName = (locale) => {
+  return new Intl.DisplayNames([locale], { type: "language" }).of(locale);
+};
 
 const Login = () => {
+  const t = useTranslations("Auth");
+  const locale = useLocale();
+  const fullName = getFullLanguageName(locale);
   const router = useRouter();
   const [data, setData] = useState({ email: "", password: "" });
   const theme = useThemeStore((state) => state.theme);
 
   const login = async () => {
+    if(!data.email){
+      toast.error(t("email_required"));
+      return;
+    }
+    if(!data.password){
+      toast.error(t("password_required"));
+      return;
+    }
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_IP_URL}/auth/login`,
+        `${process.env.NEXT_PUBLIC_IP_URL}/Auth/login`,
         {
           method: "POST",
           headers: {
@@ -28,14 +44,15 @@ const Login = () => {
       const resData = await response.json();
 
       if (response.ok) {
-        Cookie.set("password", resData.password, { expires: 7, path: "/" });
+        // Cookie.set("password", resData.password, { expires: 7, path: "/" });
         Cookie.set("token", resData.token, { expires: 7, path: "/" });
-        router.push("/home");
+        router.push(`/${locale}/home`);
       } else {
-        toast.error(resData.message || "Something Went Wrong");
+        toast.error(resData.message || t("something_went_wrong"));
       }
     } catch (error) {
       console.error(error);
+      toast.error(t("network_error"));
     }
   };
 
@@ -58,9 +75,10 @@ const Login = () => {
         ></div>
         <div className="w-full absolute top-[25px] px-[25px] xl:px-[160px] flex flex-row justify-between items-center">
           <img
+            onClick={() => router.push(`/${locale}`)}
             src="/icons/netflix-logo.png"
             alt="netflix-logo"
-            className="w-[90px] h-[25px] xl:w-[150px] xl:h-[40px]"
+            className="hover:cursor-pointer w-[90px] h-[25px] xl:w-[150px] xl:h-[40px]"
           />
           <div className="flex flex-row justify-between items-center">
             <ThemeToggle />
@@ -68,18 +86,20 @@ const Login = () => {
           </div>
         </div>
         <div
-          className={`w-full md:w-[460px] ${
+          className={`w-full md:w-[480px] ${
             theme ? "md:bg-[#000000B2]" : "md:bg-[#FFFFFFB2]"
           } absolute top-0 mt-[100px] md:mt-[110px] xl:mt-[160px] px-[20px] py-[0px] md:px-[70px] md:py-[50px]`}
         >
-          <h2 className="text-[32px] font-bold leading-[100%]">Sign In</h2>
+          <h2 className="text-[32px] font-bold leading-[100%]">
+            {t("sign_in")}
+          </h2>
           <div className="flex flex-col">
             <input
               value={data.email}
               onChange={(e) => setData({ ...data, email: e.target.value })}
               type="email"
-              placeholder="Email"
-              className={`w-full md:w-[320px] mt-[30px] border-[1px] px-[15px] py-[20px] rounded-[5px] text-[16px] leading-[24px] font-normal
+              placeholder={t("email")}
+              className={`w-full md:w-[340px] mt-[30px] border-[1px] px-[15px] py-[20px] rounded-[5px] text-[16px] leading-[24px] font-normal
               ${
                 theme
                   ? "bg-[#161616B2] border-[#808080B2] text-white placeholder:text-white"
@@ -90,8 +110,8 @@ const Login = () => {
               value={data.password}
               onChange={(e) => setData({ ...data, password: e.target.value })}
               type="password"
-              placeholder="Password"
-              className={`w-full md:w-[320px] mt-[15px] border-[1px] px-[15px] py-[20px] rounded-[5px] text-[16px] leading-[24px] font-normal
+              placeholder={t("password")}
+              className={`w-full md:w-[340px] mt-[15px] border-[1px] px-[15px] py-[20px] rounded-[5px] text-[16px] leading-[24px] font-normal
                 ${
                   theme
                     ? "bg-[#161616B2] border-[#808080B2] text-white placeholder:text-white"
@@ -101,27 +121,27 @@ const Login = () => {
           </div>
           <button
             onClick={login}
-            className="w-full md:w-[320px] mt-[15px] bg-[#E50914] rounded-[5px] py-[10px] text-center text-[16px] leading-[16px] font-medium text-white hover:cursor-pointer"
+            className="w-full md:w-[340px] mt-[15px] bg-[#E50914] rounded-[5px] py-[10px] text-center text-[16px] leading-[16px] font-medium text-white hover:cursor-pointer"
           >
-            Sign In
+            {t("sign_in")}
           </button>
           <div
-            onClick={() => router.push("/register")}
+            onClick={() => router.push(`/${locale}/register`)}
             className="flex flex-row justify-center mt-[30px] hover:cursor-pointer"
           >
             <h3
               className={`${
                 theme ? "text-[#FFFFFFB2]" : "text-gray-700"
-              } font-normal text-[16px] leading-[100%]`}
+              } font-normal text-[14px] leading-[100%]`}
             >
-              New to Netflix?
+              {t("new_to_netflix")}
             </h3>
             <h2
               className={`${
                 theme ? "text-white" : "text-black"
-              } ml-[5px] font-medium text-[16px] leading-[100%]`}
+              } ml-[5px] font-medium text-[14px] leading-[100%]`}
             >
-              Sign up now
+              {t("sign_up_now")}
             </h2>
           </div>
         </div>
@@ -145,47 +165,47 @@ const Login = () => {
           <div className="flex flex-col">
             <div className="flex flex-row">
               <h3 className="text-[14px] leading-[100%] font-normal ">
-                Questions? Call
+                {t("questions_call")}
               </h3>
               <h3 className="text-[14px] leading-[100%] font-normal">
                 1-844-505-2993
               </h3>
             </div>
             <h3 className="text-[14px] mt-[25px] underline leading-[100%] font-normal">
-              FAQ
+              {t("faq")}
             </h3>
             <h3 className="text-[14px] mt-[25px] underline leading-[100%] font-normal">
-              Privacy
+              {t("privacy")}
             </h3>
             <h3 className="text-[14px] mt-[25px] underline leading-[100%] font-normal">
-              Ad Choices
+              {t("ad_choices")}
             </h3>
           </div>
 
           <div className="mt-[15px] xl:mt-[20px] flex flex-col">
             <h3 className="text-[14px] mt-[25px] underline leading-[100%] font-normal">
-              Help Center
+              {t("help_center")}
             </h3>
             <h3 className="text-[14px] mt-[25px] underline leading-[100%] font-normal">
-              Cookie Preferences
+              {t("cookie_preferences")}
             </h3>
           </div>
 
           <div className="mt-[0px] xl:mt-[20px] flex flex-col">
             <h3 className="text-[14px] mt-[25px] underline leading-[100%] font-normal">
-              Netflix Shop
+              {t("netflix_shop")}
             </h3>
             <h3 className="text-[14px] mt-[25px] underline leading-[100%] font-normal">
-              Corporate Information
+              {t("corporate_information")}
             </h3>
           </div>
 
           <div className="mt-[-40px] xl:mt-[20px] flex flex-col">
             <h3 className="text-[14px] mt-[25px] underline leading-[100%] font-normal">
-              Terms of Use
+              {t("terms_of_use")}
             </h3>
             <h3 className="text-[14px] mt-[25px] underline leading-[100%] font-normal">
-              Do Not Sell or Share My Personal Information
+              {t("do_not_sell_or_share_my_personal_information")}
             </h3>
           </div>
           <div
@@ -193,7 +213,9 @@ const Login = () => {
               theme ? "border-[#808080B2]" : "border-black"
             }`}
           >
-            <h3 className="text-[16px] leading-[24px] font-normal">English</h3>
+            <h3 className="text-[16px] leading-[24px] font-normal">
+              {fullName}
+            </h3>
           </div>
         </div>
       </div>
