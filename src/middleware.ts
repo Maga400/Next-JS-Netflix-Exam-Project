@@ -44,9 +44,9 @@ export function middleware(request: NextRequest) {
     pathWithoutLocale.startsWith(route)
   );
 
-  if (isProtected && !token) {
-    return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
-  }
+  // if (isProtected && !token) {
+  //   return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
+  // }
 
   // Diğer tüm durumlarda sadece locale ayarla
   return intlMiddleware(request);

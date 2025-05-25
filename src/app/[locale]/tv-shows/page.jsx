@@ -20,6 +20,8 @@ const TvShows = () => {
   const theme = useThemeStore((state) => state.theme);
   const scrollRef = useRef(null);
   const [activeLoadingId, setActiveLoadingId] = useState(null);
+  const [loading2,setLoading2] = useState(false);
+  const [loading3,setLoading3] = useState(false);
 
   const getAllTvShows = async (page = 1) => {
     setIsLoading(true);
@@ -89,7 +91,7 @@ const TvShows = () => {
         <div className="mt-[70px]">
           <div className="flex gap-4 mb-6">
             <button
-              onClick={() => router.push(`/${locale}/tv-shows/genre`)}
+              onClick={() => {setLoading2(true); router.push(`/${locale}/tv-shows/genre`)}}
               className={`px-4 py-2 rounded-lg font-semibold transition 
       ${
         theme
@@ -97,10 +99,10 @@ const TvShows = () => {
           : "bg-gray-200 text-black hover:bg-gray-300"
       }`}
             >
-              {t("genre")}
+              {loading2 ? <Loading2 /> : t("genre")}
             </button>
             <button
-              onClick={() => router.push(`/${locale}/tv-shows/category`)}
+              onClick={() => {setLoading3(true); router.push(`/${locale}/tv-shows/category`)}}
               className={`px-4 py-2 rounded-lg font-semibold transition 
       ${
         theme
@@ -108,7 +110,7 @@ const TvShows = () => {
           : "bg-gray-200 text-black hover:bg-gray-300"
       }`}
             >
-              {t("category")}
+              {loading3 ? <Loading2 /> : t("category")}
             </button>
           </div>
 

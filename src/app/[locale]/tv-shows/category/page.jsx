@@ -116,7 +116,7 @@ const Category = () => {
         <button
           onClick={() => {
             setLoading(true);
-            router.push(`/${locale}/movies`);
+            router.push(`/${locale}/tv-shows`);
           }}
           className={`flex items-center gap-2 px-3 md:px-4 py-2 rounded-full shadow-md transition-all duration-200 hover:cursor-pointer ${
             theme

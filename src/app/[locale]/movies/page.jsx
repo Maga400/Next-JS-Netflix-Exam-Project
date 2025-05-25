@@ -4,7 +4,7 @@ import Header from "@/components/Header";
 import { useRouter } from "next/navigation";
 import Loading from "@/components/Loading";
 import { useThemeStore } from "../../../../store/themeStore";
-import { useLocale,useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { ArrowLeftCircle, ArrowRightCircle } from "lucide-react";
 import Image from "next/image";
 import Loading2 from "../../../components/Loading2";
@@ -20,6 +20,8 @@ const Movies = () => {
   const theme = useThemeStore((state) => state.theme);
   const scrollRef = useRef(null);
   const [activeLoadingId, setActiveLoadingId] = useState(null);
+  const [loading2, setLoading2] = useState(false);
+  const [loading3, setLoading3] = useState(false);
 
   const getAllMovies = async (page = 1) => {
     setIsLoading(true);
@@ -89,34 +91,31 @@ const Movies = () => {
         <div className="mt-[70px]">
           <div className="flex gap-4 mb-6">
             <button
-              onClick={() => router.push(`/${locale}/movies/genre`)}
+              onClick={() => { setLoading2(true); router.push(`/${locale}/movies/genre`) }}
               className={`px-4 py-2 rounded-lg font-semibold transition 
-      ${
-        theme
-          ? "bg-gray-800 text-white hover:bg-gray-600"
-          : "bg-gray-200 text-black hover:bg-gray-300"
-      }`}
+      ${theme
+                  ? "bg-gray-800 text-white hover:bg-gray-600"
+                  : "bg-gray-200 text-black hover:bg-gray-300"
+                }`}
             >
-              {t("genre")}
+              {loading2 ? <Loading2 /> : t("genre")}
             </button>
             <button
-              onClick={() => router.push(`/${locale}/movies/category`)}
+              onClick={() => { setLoading3(true); router.push(`/${locale}/movies/category`) }}
               className={`px-4 py-2 rounded-lg font-semibold transition 
-      ${
-        theme
-          ? "bg-gray-800 text-white hover:bg-gray-600"
-          : "bg-gray-200 text-black hover:bg-gray-300"
-      }`}
+      ${theme
+                  ? "bg-gray-800 text-white hover:bg-gray-600"
+                  : "bg-gray-200 text-black hover:bg-gray-300"
+                }`}
             >
-              {t("category")}
+              {loading3 ? <Loading2 /> : t("category")}
             </button>
           </div>
 
           <div
             ref={scrollRef}
-            className={`custom-scroll xl:hidden flex gap-[15px] md:gap-[20px] overflow-x-auto whitespace-nowrap scroll-smooth ${
-              theme ? "bg-black" : "bg-white"
-            }`}
+            className={`custom-scroll xl:hidden flex gap-[15px] md:gap-[20px] overflow-x-auto whitespace-nowrap scroll-smooth ${theme ? "bg-black" : "bg-white"
+              }`}
           >
             {movies?.map((movie) => (
               <div
@@ -132,9 +131,8 @@ const Movies = () => {
                       : "/images/defaultPoster.png"
                   }
                   alt={movie?.title}
-                  className={`w-full h-full object-cover rounded-[10px] border-[1px] ${
-                    theme ? "border-white" : "border-gray-700"
-                  }`}
+                  className={`w-full h-full object-cover rounded-[10px] border-[1px] ${theme ? "border-white" : "border-gray-700"
+                    }`}
                   layout="fill"
                   objectFit="cover"
                 />
@@ -222,10 +220,9 @@ const Movies = () => {
           onClick={() => handlePageChange(1)}
           disabled={page === 1}
           className={`px-3 py-2 rounded-lg font-medium transition 
-            ${
-              theme
-                ? "bg-gray-700 text-white hover:bg-gray-600"
-                : "bg-gray-200 text-black hover:bg-gray-300"
+            ${theme
+              ? "bg-gray-700 text-white hover:bg-gray-600"
+              : "bg-gray-200 text-black hover:bg-gray-300"
             } disabled:opacity-40 disabled:cursor-not-allowed`}
         >
           «
@@ -234,10 +231,9 @@ const Movies = () => {
           onClick={() => handlePageChange(page - 1)}
           disabled={page === 1}
           className={`px-3 py-2 rounded-lg font-medium transition 
-            ${
-              theme
-                ? "bg-gray-700 text-white hover:bg-gray-600"
-                : "bg-gray-200 text-black hover:bg-gray-300"
+            ${theme
+              ? "bg-gray-700 text-white hover:bg-gray-600"
+              : "bg-gray-200 text-black hover:bg-gray-300"
             } disabled:opacity-40 disabled:cursor-not-allowed`}
         >
           ←
@@ -247,12 +243,11 @@ const Movies = () => {
             key={num}
             onClick={() => handlePageChange(num)}
             className={`px-4 py-2 rounded-lg font-semibold transition 
-              ${
-                page === num
-                  ? theme
-                    ? "bg-white text-black"
-                    : "bg-black text-white"
-                  : theme
+              ${page === num
+                ? theme
+                  ? "bg-white text-black"
+                  : "bg-black text-white"
+                : theme
                   ? "bg-gray-800 text-white hover:bg-gray-600"
                   : "bg-gray-100 text-black hover:bg-gray-300"
               }`}
@@ -264,10 +259,9 @@ const Movies = () => {
           onClick={() => handlePageChange(page + 1)}
           disabled={page === totalPages}
           className={`px-3 py-2 rounded-lg font-medium transition 
-            ${
-              theme
-                ? "bg-gray-700 text-white hover:bg-gray-600"
-                : "bg-gray-200 text-black hover:bg-gray-300"
+            ${theme
+              ? "bg-gray-700 text-white hover:bg-gray-600"
+              : "bg-gray-200 text-black hover:bg-gray-300"
             } disabled:opacity-40 disabled:cursor-not-allowed`}
         >
           →
@@ -276,10 +270,9 @@ const Movies = () => {
           onClick={() => handlePageChange(totalPages)}
           disabled={page === totalPages}
           className={`px-3 py-2 rounded-lg font-medium transition 
-            ${
-              theme
-                ? "bg-gray-700 text-white hover:bg-gray-600"
-                : "bg-gray-200 text-black hover:bg-gray-300"
+            ${theme
+              ? "bg-gray-700 text-white hover:bg-gray-600"
+              : "bg-gray-200 text-black hover:bg-gray-300"
             } disabled:opacity-40 disabled:cursor-not-allowed`}
         >
           »
