@@ -19,6 +19,7 @@ import { useThemeStore } from "../../../store/themeStore";
 import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { toast } from "react-hot-toast";
+import Loading2 from "@/components/Loading2";
 
 const getFullLanguageName = (locale) => {
   return new Intl.DisplayNames([locale], { type: "language" }).of(locale);
@@ -98,7 +99,9 @@ const Landing = () => {
   const selectRef = useRef(null);
   const theme = useThemeStore((state) => state.theme);
   const [email, setEmail] = useState("");
-
+  const [loading2, setLoading2] = useState(false);
+  const [loading3, setLoading3] = useState(false);
+  
   const getTrendingMovies = async () => {
     setLoading(true);
     try {
@@ -132,11 +135,13 @@ const Landing = () => {
   };
 
   const getStarted = () => {
+    setLoading3(true);
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (email !== "" && emailRegex.test(email)) {
       router.push(`/${locale}/register?email=${encodeURIComponent(email)}`);
     } else {
+      setLoading3(false);
       toast.error(t("valid_email"));
     }
   };
@@ -195,10 +200,19 @@ const Landing = () => {
             <ThemeToggle />
             <LanguageSelector />
             <button
-              onClick={() => router.push(`/${locale}/login`)}
+              onClick={() => {
+                setLoading2(true);
+                router.push(`/${locale}/login`);
+              }}
               className="w-fit h-fit bg-[#E50914] ml-[10px] rounded-[5px] py-[5px] md:py-[8px] xl:py-[9px] px-[15px] md:px-[18px] xl:px-[20px] text-[11px] md:text-[13px] xl:text-[14px] leading-[18px] xl:leading-[20px] font-medium xl:font-semibold text-white hover:cursor-pointer"
             >
-              {t("sign_in")}
+              {loading2 ? (
+                <div className="flex justify-center items-center">
+                  <Loading2 bg="border-white" />
+                </div>
+              ) : (
+                t("sign_in")
+              )}
             </button>
           </div>
         </div>
@@ -226,11 +240,19 @@ const Landing = () => {
                 onClick={getStarted}
                 className="flex flex-row justify-center items-center ml-[10px] bg-[#E50914] rounded-[5px] py-[5px] xl:py-[13px] px-[20px] xl:px-[25px] text-[14px] xl:text-[19px] leading-[20px] xl:leading-[28px] font-medium xl:font-semibold text-white hover:cursor-pointer"
               >
-                {t("get_started")}
-                <img
-                  className="w-[30px] h-[30px] ml-[5px]"
-                  src="/icons/right-arrow.svg"
-                />
+                {loading3 ? (
+                  <div className="flex justify-center items-center">
+                    <Loading2 bg="border-white" />
+                  </div>
+                ) : (
+                  <div className="flex flex-row justify-center">
+                    {t("get_started")}
+                    <img
+                      className="w-[30px] h-[30px] ml-[5px]"
+                      src="/icons/right-arrow.svg"
+                    />
+                  </div>
+                )}
               </button>
             </div>
           </div>

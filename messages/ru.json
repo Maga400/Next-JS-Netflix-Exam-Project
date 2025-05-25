@@ -61,7 +61,8 @@
     "tv_shows":"Телешоу",
     "/home":"/дом",
     "/movies":"/фильмы",
-    "/tv_shows":"/телешоу"
+    "/tv_shows":"/телешоу",
+    "search_placeholder":"Поиск..."
   },
   "Language":{
     "azerbaijan":"Азербайджан",
@@ -110,11 +111,51 @@
   "Movies":{
     "go_back":"Вернуться назад",
     "similar_movies":"Похожие фильмы",
-    "no_similar_movies_found":"Похожих фильмов не найдено."
+    "no_similar_movies_found":"Похожих фильмов не найдено.",
+    "more_info":"Дополнительная информация"
   },
   "TvShows":{
     "go_back":"Вернуться назад",
     "similar_tv_shows":"Похожие телешоу",
-    "no_similar_tv_shows_found":"Похожих телешоу не найдено."
+    "no_similar_tv_shows_found":"Похожих телешоу не найдено.",
+    "more_info":"Дополнительная информация"
+  },
+  "MoreInfo":{
+    "release_date":"Дата выпуска",
+    "runtime":"Продолжительность",
+    "language":"Язык",
+    "vote_average":"Среднее количество голосов",
+    "votes":"Голоса",
+    "status":"Статус",
+    "website":"Веб-сайт",
+    "go_back":"Назад",
+    "movie_not_found":"Фильм не найден",
+    "country":"Страна",
+    "budget":"Бюджет",
+    "revenue":"Доход",
+    "rating":"Рейтинг",
+    "collection":"Коллекция:",
+    "popularity":"Популярность",
+    "tagline":"Слоган",
+    "production_companies":"Производственные компании",
+    "no_logo":"Без логотипа",
+    "production_countries":"Страны производства",
+    "spoken_languages":"Языки общения",
+    "origin_country":"Страна происхождения",
+    "video_available":"Доступное видео:",
+    "adult_content":"Контент для взрослых:"
+  },
+  "Other":{
+    "category":"Категория",
+    "genre":"Жанр"
+  },
+  "Category":{
+    "go_back":"назад",
+    "top_rated":"Наивысший рейтинг",
+    "popular":"Популярные",
+    "upcoming":"Предстоящие",
+    "now_playing":"Играют сейчас",
+    "on_the_air": "В эфире",
+    "airing_today": "В эфире сегодня"
   }
 }

@@ -6,6 +6,7 @@ import { useTranslations, useLocale } from "next-intl";
 import Image from "next/image";
 import Loading from "@/components/Loading";
 import { useRouter } from "next/navigation";
+import Loading2 from "../../../components/Loading2";
 
 const Home = () => {
   const t = useTranslations("Home");
@@ -13,6 +14,8 @@ const Home = () => {
   const isDark = theme;
   const locale = useLocale();
   const [loading, setLoading] = useState(false);
+  const [loading2, setLoading2] = useState(false);
+  const [loading3, setLoading3] = useState(false);
   const [movie, setMovie] = useState({});
   const router = useRouter();
 
@@ -128,27 +131,37 @@ const Home = () => {
 
             <div className="flex flex-col sm:flex-row mt-6 gap-3 sm:gap-4">
               <button
-              onClick={() => router.push(`/${locale}/movies/${movie.id}`)}
+                onClick={() => {
+                  setLoading2(true);
+                  router.push(`/${locale}/movies/${movie.id}?from=home`);
+                }}
                 className={`
-                  hover:cursor-pointer
-                  rounded-md py-3 px-6 
-                  font-bold 
-                  text-sm sm:text-base
-                  ${isDark ? "bg-white text-black" : "bg-black text-white"}
-                `}
+      hover:cursor-pointer
+      rounded-md py-3 px-6 
+      font-bold 
+      text-sm sm:text-base
+      ${isDark ? "bg-white text-black" : "bg-black text-white"}
+    `}
               >
-                {t("play")}
+                {loading2 ? <Loading2 bg={theme ? "border-black" : "border-white"} /> : t("play")}
               </button>
+
               <button
+                onClick={() =>{
+                  setLoading3(true);
+                  router.push(
+                    `/${locale}/movies/${movie.id}/more-info?from=home`
+                  )
+                }}
                 className={`
-                  hover:cursor-pointer
-                  rounded-md py-3 px-6 
-                  font-bold 
-                  text-sm sm:text-base
-                  ${isDark ? "bg-[#515451] text-white" : "bg-gray-200 text-black"}
-                `}
+      hover:cursor-pointer
+      rounded-md py-3 px-6 
+      font-bold 
+      text-sm sm:text-base
+      ${isDark ? "bg-[#515451] text-white" : "bg-gray-200 text-black"}
+    `}
               >
-                {t("more_info")}
+                {loading3 ? <Loading2 /> : t("more_info")}
               </button>
             </div>
           </>

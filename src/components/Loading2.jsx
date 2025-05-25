@@ -2,10 +2,10 @@
 import React from "react";
 import { useThemeStore } from "../../store/themeStore";
 
-const Loading = () => {
+const Loading = ({bg}) => {
   const theme = useThemeStore((state) => state.theme);
 
-  const spinnerColor = theme ? "border-white" : "border-black";
+  const spinnerColor = bg ? bg : theme ? "border-white" : "border-black";
   const spinnerTransparent = theme ? "border-t-transparent" : "border-t-transparent";
 
   return (

@@ -6,6 +6,7 @@ import { toast } from "react-hot-toast";
 import ThemeToggle from "@/components/ThemeToggle";
 import { useThemeStore } from "../../../../../store/themeStore";
 import { useTranslations, useLocale } from "next-intl";
+import Loading from "@/components/Loading2";
 
 const getFullLanguageName = (locale) => {
   return new Intl.DisplayNames([locale], { type: "language" }).of(locale);
@@ -24,6 +25,9 @@ const Register = () => {
     password: "",
   });
   const theme = useThemeStore((state) => state.theme);
+  const [loading, setLoading] = useState(false);
+  const [loading2, setLoading2] = useState(false);
+  const [loading3, setLoading3] = useState(false);
 
   const validate = () => {
     const { username, email, password } = data;
@@ -49,8 +53,7 @@ const Register = () => {
       return false;
     }
 
-    const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
     if (!passwordRegex.test(password)) {
       toast.error(t("password_complexity"));
       return false;
@@ -63,6 +66,7 @@ const Register = () => {
     if (!validate()) return;
 
     try {
+      setLoading(true);
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_IP_URL}/Auth/register`,
         {
@@ -85,6 +89,8 @@ const Register = () => {
     } catch (error) {
       console.error(error);
       toast.error(t("something_went_wrong"));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -106,11 +112,22 @@ const Register = () => {
           } opacity-[50%] w-full h-[750px] absolute hidden md:block`}
         ></div>
         <div className="w-full absolute top-[25px] px-[25px] xl:px-[160px] flex flex-row justify-between items-center">
-          <img onClick={() => router.push(`/${locale}`)}
-            src="/icons/netflix-logo.png"
-            alt="netflix-logo"
-            className="hover:cursor-pointer w-[90px] h-[25px] xl:w-[150px] xl:h-[40px]"
-          />
+          <div
+            onClick={() => {
+              setLoading3(true);
+              router.push(`/${locale}`);
+            }}
+          >
+            {loading3 ? (
+              <Loading bg="border-white" />
+            ) : (
+              <img
+                src="/icons/netflix-logo.png"
+                alt="netflix-logo"
+                className="hover:cursor-pointer w-[90px] h-[25px] xl:w-[150px] xl:h-[40px]"
+              />
+            )}
+          </div>
           <div className="flex flex-row justify-between items-center">
             <ThemeToggle />
             <LanguageSelector />
@@ -166,26 +183,43 @@ const Register = () => {
             onClick={register}
             className="w-full md:w-[320px] mt-[15px] bg-[#E50914] rounded-[5px] py-[10px] text-center text-[16px] leading-[16px] font-medium text-white hover:cursor-pointer"
           >
-            {t("sign_up")}
+            {loading ? (
+              <div className="flex justify-center items-center">
+                <Loading bg="border-white" />
+              </div>
+            ) : (
+              t("sign_up")
+            )}
           </button>
           <div
-            onClick={() => router.push(`/${locale}/login`)}
+            onClick={() => {
+              setLoading2(true);
+              router.push(`/${locale}/login`);
+            }}
             className="flex flex-row justify-center mt-[30px] hover:cursor-pointer"
           >
-            <h3
-              className={`${
-                theme ? "text-[#FFFFFFB2]" : "text-gray-700"
-              } font-normal text-[16px] leading-[100%]`}
-            >
-              {t("already_have_an_account")}
-            </h3>
-            <h2
-              className={`${
-                theme ? "text-white" : "text-black"
-              } ml-[5px] font-medium text-[16px] leading-[100%]`}
-            >
-              {t("sign_in")}
-            </h2>
+            {loading2 ? (
+              <div className="flex justify-center items-center">
+                <Loading /> 
+              </div>
+            ) : (
+              <div className="flex flex-row justify-center">
+                <h3
+                  className={`${
+                    theme ? "text-[#FFFFFFB2]" : "text-gray-700"
+                  } font-normal text-[16px] leading-[100%]`}
+                >
+                  {t("already_have_an_account")}
+                </h3>
+                <h2
+                  className={`${
+                    theme ? "text-white" : "text-black"
+                  } ml-[5px] font-medium text-[16px] leading-[100%]`}
+                >
+                  {t("sign_in")}
+                </h2>
+              </div>
+            )}
           </div>
         </div>
         <div
@@ -258,7 +292,9 @@ const Register = () => {
               theme ? "border-[#808080B2]" : "border-black"
             }`}
           >
-            <h3 className="text-[16px] leading-[24px] font-normal">{fullName}</h3>
+            <h3 className="text-[16px] leading-[24px] font-normal">
+              {fullName}
+            </h3>
           </div>
         </div>
       </div>

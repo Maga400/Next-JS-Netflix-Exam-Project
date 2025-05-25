@@ -1,6 +1,6 @@
 {
   "Landing": {
-    "valid_email":"Please enter a valid email address.",
+    "valid_email": "Please enter a valid email address.",
     "sign_in": "Sign In",
     "unlimited": "Unlimited movies, TV shows, and more",
     "starts": "Starts at $6.99. Cancel anytime.",
@@ -61,7 +61,8 @@
     "tv_shows": "Tv Shows",
     "/home": "/home",
     "/movies": "/movies",
-    "/tv_shows": "/tv-shows"
+    "/tv_shows": "/tv-shows",
+    "search_placeholder": "Search..."
   },
   "Language": {
     "azerbaijan": "Azerbaijan",
@@ -74,47 +75,87 @@
   },
   "Auth": {
     "email": "Email",
-    "password":"Password",
-    "sign_in":"Sign In",
-    "new_to_netflix":"New to Netflix?",
-    "sign_up_now":"Sign up now",
-    "questions_call":"Questions? Call",
-    "faq":"FAQ",
-    "privacy":"Privacy",
-    "ad_choices":"Ad Choices",
-    "help_center":"Help Center",
-    "cookie_preferences":"Cookie Preferences",
-    "netflix_shop":"Netflix Shop",
-    "corporate_information":"Corporate Information",
-    "terms_of_use":"Terms of Use",
-    "do_not_sell_or_share_my_personal_information":"Do Not Sell or Share My Personal Information",
-    "something_went_wrong":"Something Went Wrong!",
-    "sign_up":"Sign Up",
-    "username":"Username",
-    "already_have_an_account":"Already have an account?",
+    "password": "Password",
+    "sign_in": "Sign In",
+    "new_to_netflix": "New to Netflix?",
+    "sign_up_now": "Sign up now",
+    "questions_call": "Questions? Call",
+    "faq": "FAQ",
+    "privacy": "Privacy",
+    "ad_choices": "Ad Choices",
+    "help_center": "Help Center",
+    "cookie_preferences": "Cookie Preferences",
+    "netflix_shop": "Netflix Shop",
+    "corporate_information": "Corporate Information",
+    "terms_of_use": "Terms of Use",
+    "do_not_sell_or_share_my_personal_information": "Do Not Sell or Share My Personal Information",
+    "something_went_wrong": "Something Went Wrong!",
+    "sign_up": "Sign Up",
+    "username": "Username",
+    "already_have_an_account": "Already have an account?",
     "username_required": "Username cannot be empty.",
     "email_required": "Email cannot be empty.",
     "invalid_email": "Please enter a valid email.",
     "password_min_length": "Password must be at least 8 characters long.",
     "password_complexity": "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 symbol.",
-    "password_required":"Password must not be required.",
-    "network_error":"A network error occurred. Please try again."
+    "password_required": "Password must not be required.",
+    "network_error": "A network error occurred. Please try again."
   },
-  "Home":{
-    "invited":"You're Cordially Invited",
-    "movies_today":"#1 in Movies Today",
-    "when":"When two weddings are accidentally booked on the same day at the same venue, each bridal party is challenged with preserving their family's special mo...",
-    "play":"Play",
-    "more_info":"More Info"
+  "Home": {
+    "invited": "You're Cordially Invited",
+    "movies_today": "#1 in Movies Today",
+    "when": "When two weddings are accidentally booked on the same day at the same venue, each bridal party is challenged with preserving their family's special mo...",
+    "play": "Play",
+    "more_info": "More Info"
   },
-  "Movies":{
-    "go_back":"Go Back",
-    "similar_movies":"Similar Movies",
-    "no_similar_movies_found":"No similar movies found."
+  "Movies": {
+    "go_back": "Go Back",
+    "similar_movies": "Similar Movies",
+    "no_similar_movies_found": "No similar movies found.",
+    "more_info": "More Info"
   },
-  "TvShows":{
-    "go_back":"Go Back",
-    "similar_tv_shows":"Similar TV Shows",
-    "no_similar_tv_shows_found":"No similar TV shows found."
+  "TvShows": {
+    "go_back": "Go Back",
+    "similar_tv_shows": "Similar TV Shows",
+    "no_similar_tv_shows_found": "No similar TV shows found.",
+    "more_info": "More Info"
+  },
+  "MoreInfo": {
+    "release_date": "Release Date",
+    "runtime": "Runtime",
+    "language": "Language",
+    "vote_average": "Vote Average",
+    "votes": "Votes",
+    "status": "Status",
+    "website": "Website",
+    "go_back": "Go Back",
+    "movie_not_found": "Movie Not Found",
+    "country": "Country",
+    "budget": "Budget",
+    "revenue": "Revenue",
+    "rating": "Rating",
+    "collection": "Collection:",
+    "popularity": "Popularity",
+    "tagline": "Tagline",
+    "production_companies": "Production Companies",
+    "no_logo": "No Logo",
+    "production_countries": "Production Countries",
+    "spoken_languages": "Spoken Languages",
+    "origin_country": "Origin Country",
+    "video_available": "Video Available:",
+    "adult_content": "Adult Content:"
+  },
+  "Other": {
+    "category": "Category",
+    "genre": "Genre"
+  },
+  "Category": {
+    "go_back": "Go Back",
+    "top_rated": "Top Rated",
+    "popular": "Popular",
+    "upcoming": "Upcoming",
+    "now_playing": "Now Playing",
+    "on_the_air": "On The Air",
+    "airing_today": "Airing Today"
   }
 }

@@ -7,6 +7,7 @@ import Cookie from "js-cookie";
 import ThemeToggle from "@/components/ThemeToggle";
 import { useThemeStore } from "../../../../../store/themeStore";
 import { useTranslations, useLocale } from "next-intl";
+import Loading from "@/components/Loading2";
 
 const getFullLanguageName = (locale) => {
   return new Intl.DisplayNames([locale], { type: "language" }).of(locale);
@@ -19,14 +20,20 @@ const Login = () => {
   const router = useRouter();
   const [data, setData] = useState({ email: "", password: "" });
   const theme = useThemeStore((state) => state.theme);
+  const [loading, setLoading] = useState(false);
+  const [loading2, setLoading2] = useState(false);
+  const [loading3, setLoading3] = useState(false);
 
   const login = async () => {
-    if(!data.email){
+    setLoading(true);
+    if (!data.email) {
       toast.error(t("email_required"));
+      setLoading(false);
       return;
     }
-    if(!data.password){
+    if (!data.password) {
       toast.error(t("password_required"));
+      setLoading(false);
       return;
     }
     try {
@@ -53,6 +60,8 @@ const Login = () => {
     } catch (error) {
       console.error(error);
       toast.error(t("network_error"));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -74,12 +83,22 @@ const Login = () => {
           } opacity-[50%] w-full h-[750px] absolute hidden md:block`}
         ></div>
         <div className="w-full absolute top-[25px] px-[25px] xl:px-[160px] flex flex-row justify-between items-center">
-          <img
-            onClick={() => router.push(`/${locale}`)}
-            src="/icons/netflix-logo.png"
-            alt="netflix-logo"
-            className="hover:cursor-pointer w-[90px] h-[25px] xl:w-[150px] xl:h-[40px]"
-          />
+          <div
+            onClick={() => {
+              setLoading3(true);
+              router.push(`/${locale}`);
+            }}
+          >
+            {loading3 ? (
+              <div className="flex justify-center items-center"><Loading bg="border-white" /></div>
+            ) : (
+              <img
+                src="/icons/netflix-logo.png"
+                alt="netflix-logo"
+                className="hover:cursor-pointer w-[90px] h-[25px] xl:w-[150px] xl:h-[40px]"
+              />
+            )}
+          </div>
           <div className="flex flex-row justify-between items-center">
             <ThemeToggle />
             <LanguageSelector />
@@ -123,26 +142,43 @@ const Login = () => {
             onClick={login}
             className="w-full md:w-[340px] mt-[15px] bg-[#E50914] rounded-[5px] py-[10px] text-center text-[16px] leading-[16px] font-medium text-white hover:cursor-pointer"
           >
-            {t("sign_in")}
+            {loading ? (
+              <div className="flex justify-center items-center">
+                <Loading bg="border-white" />
+              </div>
+            ) : (
+              t("sign_in")
+            )}
           </button>
           <div
-            onClick={() => router.push(`/${locale}/register`)}
+            onClick={() => {
+              setLoading2(true);
+              router.push(`/${locale}/register`);
+            }}
             className="flex flex-row justify-center mt-[30px] hover:cursor-pointer"
           >
-            <h3
-              className={`${
-                theme ? "text-[#FFFFFFB2]" : "text-gray-700"
-              } font-normal text-[14px] leading-[100%]`}
-            >
-              {t("new_to_netflix")}
-            </h3>
-            <h2
-              className={`${
-                theme ? "text-white" : "text-black"
-              } ml-[5px] font-medium text-[14px] leading-[100%]`}
-            >
-              {t("sign_up_now")}
-            </h2>
+            {loading2 ? (
+              <div className="flex justify-center items-center">
+                <Loading />
+              </div>
+            ) : (
+              <div className="flex flex-row justify-center">
+                <h3
+                  className={`${
+                    theme ? "text-[#FFFFFFB2]" : "text-gray-700"
+                  } font-normal text-[14px] leading-[100%]`}
+                >
+                  {t("new_to_netflix")}
+                </h3>
+                <h2
+                  className={`${
+                    theme ? "text-white" : "text-black"
+                  } ml-[5px] font-medium text-[14px] leading-[100%]`}
+                >
+                  {t("sign_up_now")}
+                </h2>
+              </div>
+            )}
           </div>
         </div>
         <div

@@ -61,7 +61,8 @@
     "tv_shows":"Serien",
     "/home":"/heim",
     "/movies":"/filme",
-    "/tv_shows":"/fernsehsendungen"
+    "/tv_shows":"/fernsehsendungen",
+    "search_placeholder":"Suchen..."
   },
   "Language":{
     "azerbaijan":"Aserbaidschan",
@@ -110,11 +111,51 @@
   "Movies":{
     "go_back":"Zurück",
     "similar_movies":"Ähnliche Filme",
-    "no_similar_movies_found":"Keine ähnlichen Filme gefunden."
+    "no_similar_movies_found":"Keine ähnlichen Filme gefunden.",
+    "more_info":"Weitere Infos"
   },
   "TvShows":{
     "go_back":"Zurück",
     "similar_tv_shows":"Ähnliche TV-Sendungen",
-    "no_similar_tv_shows_found":"Keine ähnlichen TV-Sendungen gefunden."
+    "no_similar_tv_shows_found":"Keine ähnlichen TV-Sendungen gefunden.",
+    "more_info":"Weitere Infos"
+  },
+  "MoreInfo":{
+    "release_date":"Erscheinungsdatum",
+    "runtime":"Laufzeit",
+    "language":"Sprache",
+    "vote_average":"Durchschnittliche Bewertung",
+    "votes":"Stimmen",
+    "status":"Status",
+    "website":"Website",
+    "go_back":"Zurück",
+    "movie_not_found":"Film nicht gefunden",
+    "country":"Land",
+    "budget":"Budget",
+    "revenue":"Einnahmen",
+    "rating":"Bewertung",
+    "collection":"Kollektion:",
+    "popularity":"Popularität",
+    "tagline":"Slogan",
+    "production_companies":"Produktionsfirmen",
+    "no_logo":"Kein Logo",
+    "production_countries":"Produktionsländer",
+    "spoken_languages":"Sprachen",
+    "origin_country":"Herkunftsland",
+    "video_available":"Video verfügbar:",
+    "adult_content":"Nicht jugendfreie Inhalte:"
+  },
+  "Other":{
+    "category":"Kategorie",
+    "genre":"Genre"
+  },
+  "Category":{
+    "go_back":"Zurück",
+    "top_rated":"Top-Bewertungen",
+    "popular":"Beliebt",
+    "upcoming":"Demnächst",
+    "now_playing":"Jetzt im Spiel",
+    "on_the_air": "Auf Sendung",
+    "airing_today": "Heute im Fernsehen"
   }
 }

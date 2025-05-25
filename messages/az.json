@@ -61,7 +61,8 @@
     "tv_shows": "Televiziya şouları",
     "/home": "/ev",
     "/movies": "/filmlər",
-    "/tv_shows": "/televiziya-şouları"
+    "/tv_shows": "/televiziya-şouları",
+    "search_placeholder":"Axtar..."
   },
   "Language": {
     "azerbaijan": "Azərbaycan",
@@ -110,11 +111,51 @@
   "Movies": {
     "go_back": "Geri qayıt",
     "similar_movies": "Oxşar Filmlər",
-    "no_similar_movies_found": "Oxşar filmlər tapılmadı."
+    "no_similar_movies_found": "Oxşar filmlər tapılmadı.",
+    "more_info":"Ətraflı Məlumat"
   },
   "TvShows": {
     "go_back": "Geri qayıt",
     "similar_tv_shows": "Oxşar TV Şoular",
-    "no_similar_tv_shows_found": "Oxşar TV şouları tapılmadı."
+    "no_similar_tv_shows_found": "Oxşar TV şouları tapılmadı.",
+    "more_info":"Ətraflı Məlumat"
+  },
+  "MoreInfo":{
+    "release_date":"Buraxılış tarixi",
+    "runtime":"İcra müddəti",
+    "language":"Dil",
+    "vote_average":"Orta səs",
+    "votes":"Səslər",
+    "status":"Vəziyyət",
+    "website":"Veb sayt",
+    "go_back":"Geri qayıt",
+    "movie_not_found":"Film Tapılmadı",
+    "country":"ölkə",
+    "budget":"Büdcə",
+    "revenue":"Gəlir",
+    "rating":"Reytinq",
+    "collection":"Kolleksiya:",
+    "popularity":"Populyarlıq",
+    "tagline":"Slogan",
+    "production_companies":"İstehsal şirkətləri",
+    "no_logo":"Loqo yoxdur",
+    "production_countries":"İstehsal edən ölkələr",
+    "spoken_languages":"Danışıq Dillər",
+    "origin_country":"Mənşə Ölkə",
+    "video_available":"Mövcud video:",
+    "adult_content":"Böyüklər üçün Məzmun:"
+  },
+  "Other":{
+    "category":"Kateqoriya",
+    "genre":"Janr"
+  },
+  "Category":{
+    "go_back":"Geri qayıt",
+    "top_rated":"Qiymətləndirilmiş",
+    "popular":"Populyar",
+    "upcoming":"Qarşıdan gələn",
+    "now_playing":"İndi oynayır",
+    "on_the_air": "Efirdə",
+    "airing_today": "Bu gün Yayılır"
   }
 }

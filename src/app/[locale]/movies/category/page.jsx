@@ -1,33 +1,45 @@
 "use client";
+
 import { useEffect, useRef, useState } from "react";
-import Header from "@/components/Header";
 import { useRouter } from "next/navigation";
 import Loading from "@/components/Loading";
-import { useThemeStore } from "../../../../store/themeStore";
-import { useLocale,useTranslations } from "next-intl";
-import { ArrowLeftCircle, ArrowRightCircle } from "lucide-react";
+import { useThemeStore } from "../../../../../store/themeStore";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
-import Loading2 from "../../../components/Loading2";
+import Loading2 from "../../../../components/Loading2";
+import { ArrowLeft, ArrowRightCircle, ArrowLeftCircle } from "lucide-react";
+import LanguageSelector from "@/components/LanguageSelector";
+import ThemeToggle from "@/components/ThemeToggle";
 
-const Movies = () => {
-  const t = useTranslations("Other");
+const Category = () => {
+  const t = useTranslations("Category");
   const locale = useLocale();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [movies, setMovies] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState("top_rated");
   const theme = useThemeStore((state) => state.theme);
   const scrollRef = useRef(null);
   const [activeLoadingId, setActiveLoadingId] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [path, setPath] = useState(false);
+  const selectRef = useRef(null);
 
-  const getAllMovies = async (page = 1) => {
+  const movieCategories = [
+    { label: t("top_rated"), value: "top_rated" },
+    { label: t("popular"), value: "popular" },
+    { label: t("upcoming"), value: "upcoming" },
+    { label: t("now_playing"), value: "now_playing" },
+  ];
+
+  const getAllMovies = async (category, page = 1) => {
     setIsLoading(true);
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_IP_URL}/Movie/allMovies/${page}?lang=${locale}&count=10`
+        `${process.env.NEXT_PUBLIC_IP_URL}/Movie/categories?category=${category}&page=${page}&lang=${locale}&count=10`
       );
-      setMovies([]);
       if (response.ok) {
         const data = await response.json();
         setMovies(data.movies);
@@ -43,9 +55,18 @@ const Movies = () => {
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages && newPage !== page) {
       setPage(newPage);
-      getAllMovies(newPage);
     }
   };
+
+  const handleCategoryChange = (e) => {
+    const newCategory = e.target.value;
+    setSelectedCategory(newCategory);
+    setPage(1); // Yeni kategori seçilince sayfa sıfırlanmalı
+  };
+
+  useEffect(() => {
+    getAllMovies(selectedCategory, page);
+  }, [selectedCategory, page]);
 
   const getPaginationGroup = () => {
     let start = Math.max(1, page - 2);
@@ -66,57 +87,92 @@ const Movies = () => {
     }
   };
 
-  useEffect(() => {
-    getAllMovies(page);
-  }, []);
-
   const handleMovieClick = (id) => {
     setActiveLoadingId(id);
     router.push(`/${locale}/movies/${id}`);
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (selectRef.current && !selectRef.current.contains(event.target)) {
+        setPath(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <div
       className={`w-full min-h-screen transition-colors duration-300 px-4 py-6 sm:px-6 sm:py-8 md:px-12 md:py-10 lg:px-20 lg:py-12 xl:px-[90px] xl:py-[30px] 
       ${theme ? "bg-black text-white" : "bg-white text-black"}`}
     >
-      <Header />
+      {/* Header */}
+      <div className="flex flex-row justify-between">
+        <button
+          onClick={() => {
+            setLoading(true);
+            router.push(`/${locale}/movies`);
+          }}
+          className={`flex items-center gap-2 px-3 md:px-4 py-2 rounded-full shadow-md transition-all duration-200 hover:cursor-pointer ${
+            theme
+              ? "bg-[#1F1F1F] hover:bg-[#2a2a2a] text-white"
+              : "bg-gray-200 hover:bg-gray-300 text-black"
+          }`}
+        >
+          <ArrowLeft className="size-[15px] md:size-[20px]" />
+          {loading ? (
+            <Loading2 />
+          ) : (
+            <span className="text-[12px] md:text-[16px]">{t("go_back")}</span>
+          )}
+        </button>
+
+        <div className="flex items-center">
+          <ThemeToggle />
+          <LanguageSelector />
+          <div ref={selectRef} className="relative w-[140px] md:w-[160px] ml-[10px] md:ml-[15px] xl:ml-[20px]">
+            <select
+              onClick={() => setPath((prev) => !prev)}
+              value={selectedCategory}
+              onChange={handleCategoryChange}
+                    //   className={`w-[120px] md:w-[140px] xl:w-[180px] appearance-none ${theme ? "bg-[#27272A]" : "bg-[#636366]"} text-white text-[10px] md:text-[12px] xl:text-[14px] leading-[16px] md:leading-[20px] xl:leading-[24px] border-[1px] border-[#A1A1AA] py-[5px] md:py-[6px] xl:py-[7px] pl-[25px] md:pl-[30px] xl:pl-[40px] rounded-[5px] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
+
+              className={`w-full ${
+                theme
+                  ? "bg-[#27272A] border-[#A1A1AA]"
+                  : "bg-[#636366] border-black"
+              } text-white appearance-none text-[11px] md:text-[12px] xl:text-[13px] leading-[16px] md:leading-[20px] xl:leading-[24px] border-[1px] py-[5px] md:py-[6px] xl:py-[7px] px-[10px] rounded-[5px] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
+            >
+              {movieCategories.map((category) => (
+                <option key={category.value} value={category.value}>
+                  {category.label}
+                </option>
+              ))}
+            </select>
+
+            <img
+              src={path ? "/icons/up-chevron.svg" : "/icons/down-chevron.svg"}
+              className="w-[13px] h-[11px] md:w-[14px] md:h-[12px] xl:w-[15px] xl:h-[13px] absolute top-[8px] md:top-[12px] xl:top-[14px] right-[6px] md:right-[9px]"
+              alt="chevron-icon"
+            />
+          </div>
+        </div>
+      </div>
+
       {isLoading ? (
         <div className="w-full min-h-screen flex items-center justify-center">
           <Loading />
         </div>
       ) : (
-        <div className="mt-[70px]">
-          <div className="flex gap-4 mb-6">
-            <button
-              onClick={() => router.push(`/${locale}/movies/genre`)}
-              className={`px-4 py-2 rounded-lg font-semibold transition 
-      ${
-        theme
-          ? "bg-gray-800 text-white hover:bg-gray-600"
-          : "bg-gray-200 text-black hover:bg-gray-300"
-      }`}
-            >
-              {t("genre")}
-            </button>
-            <button
-              onClick={() => router.push(`/${locale}/movies/category`)}
-              className={`px-4 py-2 rounded-lg font-semibold transition 
-      ${
-        theme
-          ? "bg-gray-800 text-white hover:bg-gray-600"
-          : "bg-gray-200 text-black hover:bg-gray-300"
-      }`}
-            >
-              {t("category")}
-            </button>
-          </div>
-
+        <>
           <div
             ref={scrollRef}
-            className={`custom-scroll xl:hidden flex gap-[15px] md:gap-[20px] overflow-x-auto whitespace-nowrap scroll-smooth ${
-              theme ? "bg-black" : "bg-white"
-            }`}
+            className="custom-scroll xl:hidden flex gap-[15px] md:gap-[20px] overflow-x-auto whitespace-nowrap scroll-smooth mt-10"
           >
             {movies?.map((movie) => (
               <div
@@ -124,7 +180,6 @@ const Movies = () => {
                 onClick={() => handleMovieClick(movie?.id)}
                 className="relative flex-shrink-0 w-[160px] md:w-[200px] h-[240px] md:h-[250px] cursor-pointer"
               >
-                {/* Film posteri */}
                 <Image
                   src={
                     movie?.poster_path
@@ -132,14 +187,9 @@ const Movies = () => {
                       : "/images/defaultPoster.png"
                   }
                   alt={movie?.title}
-                  className={`w-full h-full object-cover rounded-[10px] border-[1px] ${
-                    theme ? "border-white" : "border-gray-700"
-                  }`}
+                  className="w-full h-full object-cover rounded-[10px]"
                   layout="fill"
-                  objectFit="cover"
                 />
-
-                {/* Spinner sadece aktif id eşleştiğinde görünür */}
                 {activeLoadingId === movie?.id && (
                   <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-10 rounded-[10px]">
                     <Loading2 bg="border-white" />
@@ -149,8 +199,7 @@ const Movies = () => {
             ))}
           </div>
 
-          {/* Arrows for Mobile */}
-          <div className="flex xl:hidden justify-between items-center mt-[20px]">
+          <div className="flex xl:hidden justify-between items-center mt-4">
             <button onClick={scrollLeft}>
               <ArrowLeftCircle size={32} />
             </button>
@@ -159,7 +208,6 @@ const Movies = () => {
             </button>
           </div>
 
-          {/* Desktop Grid */}
           <div className="hidden xl:grid mt-[30px] grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
             {movies?.map((movie) => (
               <div
@@ -177,14 +225,11 @@ const Movies = () => {
                   fill
                   className="object-cover group-hover:brightness-75 transition duration-300"
                 />
-
-                {/* Sadece seçilen filme spinner ekle */}
                 {activeLoadingId === movie?.id && (
                   <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-10">
                     <Loading2 bg="border-white" />
                   </div>
                 )}
-
                 <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black via-transparent to-transparent p-3 z-20">
                   <h3 className="text-white text-sm sm:text-base font-semibold truncate">
                     {movie?.title}
@@ -193,30 +238,9 @@ const Movies = () => {
               </div>
             ))}
           </div>
-        </div>
+        </>
       )}
 
-      <style jsx>{`
-        .custom-scroll {
-          scrollbar-width: thin;
-          scrollbar-color: ${theme ? "#ffffff33" : "#00000033"} transparent;
-        }
-        .custom-scroll::-webkit-scrollbar {
-          height: 6px;
-        }
-        .custom-scroll::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        .custom-scroll::-webkit-scrollbar-thumb {
-          background-color: ${theme ? "#ffffff33" : "#00000033"};
-          border-radius: 10px;
-        }
-        .custom-scroll::-webkit-scrollbar-thumb:hover {
-          background-color: ${theme ? "#ffffff55" : "#00000055"};
-        }
-      `}</style>
-
-      {/* Pagination */}
       <div className="flex justify-center items-center mt-12 gap-2 flex-wrap">
         <button
           onClick={() => handlePageChange(1)}
@@ -285,8 +309,27 @@ const Movies = () => {
           »
         </button>
       </div>
+      <style jsx>{`
+        .custom-scroll {
+          scrollbar-width: thin;
+          scrollbar-color: ${theme ? "#ffffff33" : "#00000033"} transparent;
+        }
+        .custom-scroll::-webkit-scrollbar {
+          height: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+          background-color: ${theme ? "#ffffff33" : "#00000033"};
+          border-radius: 10px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+          background-color: ${theme ? "#ffffff55" : "#00000055"};
+        }
+      `}</style>
     </div>
   );
 };
 
-export default Movies;
+export default Category;

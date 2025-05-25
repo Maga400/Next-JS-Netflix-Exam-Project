@@ -7,8 +7,10 @@ import Loading from "@/components/Loading";
 import LanguageSelector from "@/components/LanguageSelector";
 import ThemeToggle from "@/components/ThemeToggle";
 import { useThemeStore } from "../../../../../store/themeStore";
-import { useTranslations,useLocale } from "next-intl";
-import Image from "next/image"
+import { useTranslations, useLocale } from "next-intl";
+import Image from "next/image";
+import Loading2 from "../../../../components/Loading2";
+import { useSearchParams } from "next/navigation";
 
 const TvShow = ({ params }) => {
   const locale = useLocale();
@@ -24,6 +26,11 @@ const TvShow = ({ params }) => {
   const router = useRouter();
   const scrollRef = useRef(null);
   const theme = useThemeStore((state) => state.theme);
+  const [loading, setLoading] = useState(false);
+  const [loading2, setLoading2] = useState(false);
+  const [activeLoadingId, setActiveLoadingId] = useState(null);
+  const searchParams = useSearchParams();
+  const movieId = searchParams.get("movieId");
 
   const scrollLeft = () => {
     scrollRef.current.scrollBy({ left: -300, behavior: "smooth" });
@@ -106,6 +113,11 @@ const TvShow = ({ params }) => {
     getSimilar();
   }, []);
 
+  const handleTvShowClick = (id) => {
+    setActiveLoadingId(id);
+    router.push(`/${locale}/tv-shows/${id}`);
+  };
+
   return (
     <div
       className={`${
@@ -114,7 +126,10 @@ const TvShow = ({ params }) => {
     >
       <div className="flex flex-row justify-between items-center pt-[20px] md:pt-[25px] xl:pt-[30px] mx-[20px] md:mx-[60px] xl:mx-[40px]">
         <button
-          onClick={() => router.push(`/${locale}/tv-shows`)}
+          onClick={() => {
+            setLoading(true);
+            router.push(`/${locale}/tv-shows`);
+          }}
           className={`flex items-center gap-2 ${
             theme
               ? "bg-[#1F1F1F] hover:bg-[#2a2a2a] text-white"
@@ -122,7 +137,11 @@ const TvShow = ({ params }) => {
           } px-4 py-2 rounded-full shadow-md transition-all duration-200 hover:cursor-pointer`}
         >
           <ArrowLeft size={20} />
-          <span className="text-[14px] md:text-[16px]">{t('go_back')}</span>
+          {loading ? (
+            <Loading2 />
+          ) : (
+            <span className="text-[14px] md:text-[16px]">{t("go_back")}</span>
+          )}
         </button>
         <div className="flex flex-row justify-between items-center">
           <ThemeToggle />
@@ -189,13 +208,40 @@ const TvShow = ({ params }) => {
                 {tvShow?.overview}
               </p>
             )}
+
+            {tvShow?.id && (
+              <div className="flex justify-center mt-6 px-4 sm:px-0">
+                <button
+                  onClick={() => {
+                    setLoading2(true);
+                    router.push(`/${locale}/tv-shows/${tvShow.id}/more-info`);
+                  }}
+                  className="hover:cursor-pointer rounded-md group relative inline-flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-3 lg:px-8 lg:py-3 text-xs sm:text-sm lg:text-baserounded-full font-medium transition-all duration-300 bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700 shadow-md hover:shadow-xl"
+                >
+                  <span className="z-10">{t("more_info")}</span>
+                  {loading2 ? (
+                    <Loading2 />
+                  ) : (
+                    <svg
+                      className="w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:translate-x-1"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M9 5l7 7-7 7" />
+                    </svg>
+                  )}
+                </button>
+              </div>
+            )}
           </>
         )}
 
         {/* Similar Shows */}
         <div className="mt-[40px]">
           <h2 className="text-[20px] md:text-[22px] xl:text-[24px] font-normal mb-3">
-            {t('similar_tv_shows')}
+            {t("similar_tv_shows")}
           </h2>
 
           {similarLoading ? (
@@ -208,7 +254,7 @@ const TvShow = ({ params }) => {
                 {similars.map((similar) => (
                   <div
                     key={similar.id}
-                    onClick={() => router.push(`/${locale}/tv-shows/${similar.id}`)}
+                    onClick={() => handleTvShowClick(similar?.id)}
                     className="cursor-pointer relative w-full h-[300px]"
                   >
                     <Image
@@ -223,19 +269,26 @@ const TvShow = ({ params }) => {
                       }`}
                       fill
                     />
+                    {activeLoadingId === similar?.id && (
+                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-10 rounded-[10px]">
+                        <Loading2 bg="border-white" />
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
 
               <div
                 ref={scrollRef}
-                className={`${theme ? 'bg-black' : "bg-white"} custom-scroll xl:hidden flex gap-[15px] md:gap-[20px] overflow-x-auto whitespace-nowrap scroll-smooth`}
+                className={`${
+                  theme ? "bg-black" : "bg-white"
+                } custom-scroll xl:hidden flex gap-[15px] md:gap-[20px] overflow-x-auto whitespace-nowrap scroll-smooth`}
               >
                 {similars.map((similar) => (
                   <div
                     key={similar.id}
                     className="relative flex-shrink-0 w-[160px] md:w-[200px] h-[240px] md:h-[250px]"
-                    onClick={() => router.push(`/${locale}/tv-shows/${similar.id}`)}
+                    onClick={() => handleTvShowClick(similar?.id)}
                   >
                     <Image
                       src={
@@ -250,6 +303,11 @@ const TvShow = ({ params }) => {
                       layout="fill"
                       objectFit="cover"
                     />
+                    {activeLoadingId === similar?.id && (
+                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-10 rounded-[10px]">
+                        <Loading2 bg="border-white" />
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -263,7 +321,7 @@ const TvShow = ({ params }) => {
               </div>
             </>
           ) : (
-            <p className="text-[16px] mt-2">{t('no_similar_tv_shows_found')}</p>
+            <p className="text-[16px] mt-2">{t("no_similar_tv_shows_found")}</p>
           )}
         </div>
       </div>

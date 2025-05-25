@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Cookies from "js-cookie";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { ArrowLeft, ArrowRightCircle, ArrowLeftCircle } from "lucide-react";
 import Loading from "@/components/Loading";
 import LanguageSelector from "@/components/LanguageSelector";
@@ -10,6 +10,8 @@ import ThemeToggle from "@/components/ThemeToggle";
 import { useThemeStore } from "../../../../../store/themeStore";
 import { useTranslations, useLocale } from "next-intl";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
+import Loading2 from "../../../../components/Loading2";
 
 const Movie = ({ params }) => {
   const t = useTranslations("Movies");
@@ -25,6 +27,14 @@ const Movie = ({ params }) => {
   const router = useRouter();
   const scrollRef = useRef(null);
   const theme = useThemeStore((state) => state.theme);
+  const searchParams = useSearchParams();
+  const from = searchParams.get("from");
+  const [loading, setLoading] = useState(false);
+  const [loading2, setLoading2] = useState(false);
+  const [activeLoadingId, setActiveLoadingId] = useState(null);
+  // const pathname = usePathname();
+  // const normalize = (url) => decodeURIComponent(url);
+  // const currentPath = normalize(pathname);
 
   const scrollLeft = () => {
     scrollRef.current.scrollBy({ left: -300, behavior: "smooth" });
@@ -108,6 +118,11 @@ const Movie = ({ params }) => {
     getSimilar();
   }, []);
 
+  const handleMovieClick = (id) => {
+    setActiveLoadingId(id);
+    router.push(`/${locale}/movies/${id}`);
+  };
+
   return (
     <div
       className={`${
@@ -116,7 +131,12 @@ const Movie = ({ params }) => {
     >
       <div className="flex flex-row justify-between pt-[20px] md:pt-[25px] xl:pt-[30px] mx-[20px] md:mx-[60px] xl:mx-[40px]">
         <button
-          onClick={() => router.push(`/${locale}/movies`)}
+          onClick={() => {
+            setLoading(true);
+            from === "home"
+              ? router.push(`/${locale}/home`)
+              : router.push(`/${locale}/movies`);
+          }}
           className={`flex items-center gap-2 px-4 py-2 rounded-full shadow-md transition-all duration-200 hover:cursor-pointer ${
             theme
               ? "bg-[#1F1F1F] hover:bg-[#2a2a2a] text-white"
@@ -124,7 +144,11 @@ const Movie = ({ params }) => {
           }`}
         >
           <ArrowLeft size={20} />
-          <span className="text-[14px] md:text-[16px]">{t("go_back")}</span>
+          {loading ? (
+            <Loading2 />
+          ) : (
+            <span className="text-[14px] md:text-[16px]">{t("go_back")}</span>
+          )}
         </button>
         <div className="flex flex-row justify-between items-center">
           <ThemeToggle />
@@ -190,6 +214,33 @@ const Movie = ({ params }) => {
                 {movie?.overview}
               </p>
             )}
+
+            {movie?.id && (
+              <div className="flex justify-center mt-6 px-4 sm:px-0">
+                <button
+                  onClick={() => {
+                    setLoading2(true);
+                    router.push(`/${locale}/movies/${movie.id}/more-info`);
+                  }}
+                  className="hover:cursor-pointer rounded-md group relative inline-flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-3 lg:px-8 lg:py-3 text-xs sm:text-sm lg:text-baserounded-full font-medium transition-all duration-300 bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700 shadow-md hover:shadow-xl"
+                >
+                  <span className="z-10">{t("more_info")}</span>
+                  {loading2 ? (
+                    <Loading2 />
+                  ) : (
+                    <svg
+                      className="w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:translate-x-1"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M9 5l7 7-7 7" />
+                    </svg>
+                  )}
+                </button>
+              </div>
+            )}
           </>
         )}
 
@@ -209,9 +260,7 @@ const Movie = ({ params }) => {
                 {similars.map((similar) => (
                   <div
                     key={similar.id}
-                    onClick={() =>
-                      router.push(`/${locale}/movies/${similar.id}`)
-                    }
+                    onClick={() => handleMovieClick(similar?.id)}
                     className="relative cursor-pointer w-full h-[300px]"
                   >
                     <Image
@@ -226,6 +275,11 @@ const Movie = ({ params }) => {
                       }`}
                       fill
                     />
+                    {activeLoadingId === similar?.id && (
+                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-10 rounded-[10px]">
+                        <Loading2 bg="border-white" />
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -244,9 +298,7 @@ const Movie = ({ params }) => {
                         ? "bg-[#1F1F1F] border-white"
                         : "bg-[#F4F4F5] border-gray-700"
                     }`}
-                    onClick={() =>
-                      router.push(`/${locale}/movies/${similar.id}`)
-                    }
+                    onClick={() => handleMovieClick(similar.id)}
                   >
                     <Image
                       src={
@@ -259,6 +311,11 @@ const Movie = ({ params }) => {
                       layout="fill"
                       objectFit="cover"
                     />
+                    {activeLoadingId === similar?.id && (
+                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-10 rounded-[10px]">
+                        <Loading2 bg="border-white" />
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
