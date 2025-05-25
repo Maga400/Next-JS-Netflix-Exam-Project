@@ -89,7 +89,7 @@ const Category = () => {
 
   const handleMovieClick = (id) => {
     setActiveLoadingId(id);
-    router.push(`/${locale}/movies/${id}`);
+    router.push(`/${locale}/tv-shows/${id}`);
   };
 
   useEffect(() => {
@@ -233,7 +233,7 @@ const Category = () => {
                 )}
                 <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black via-transparent to-transparent p-3 z-20">
                   <h3 className="text-white text-sm sm:text-base font-semibold truncate">
-                    {tvShow?.title}
+                    {tvShow?.name}
                   </h3>
                 </div>
               </div>
