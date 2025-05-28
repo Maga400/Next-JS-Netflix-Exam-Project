@@ -62,7 +62,8 @@
     "/home": "/home",
     "/movies": "/movies",
     "/tv_shows": "/tv-shows",
-    "search_placeholder": "Search..."
+    "search_placeholder": "Search...",
+    "/profile":"/profile"
   },
   "Language": {
     "azerbaijan": "Azerbaijan",

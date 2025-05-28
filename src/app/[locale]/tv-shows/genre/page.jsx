@@ -10,6 +10,7 @@ import Loading2 from "../../../../components/Loading2";
 import { ArrowLeft, ArrowRightCircle, ArrowLeftCircle } from "lucide-react";
 import LanguageSelector from "@/components/LanguageSelector";
 import ThemeToggle from "@/components/ThemeToggle";
+import { useGoBackTvStore } from "../../../../../store/goBackTvStore";
 
 const Genre = () => {
   const t = useTranslations("Category");
@@ -29,6 +30,7 @@ const Genre = () => {
   const [genresLoading, setGenresLoading] = useState(false);
   const [genres, setGenres] = useState([]);
   const [selectedGenre, setSelectedGenre] = useState("");
+  const { addId } = useGoBackTvStore.getState();
 
   const getAllGenres = async () => {
     try {
@@ -116,7 +118,8 @@ const Genre = () => {
 
   const handleMovieClick = (id) => {
     setActiveLoadingId(id);
-    router.push(`/${locale}/tv-shows/${id}`);
+    addId(id);
+    router.push(`/${locale}/tv-shows/${id}?from=genre`);
   };
 
   useEffect(() => {

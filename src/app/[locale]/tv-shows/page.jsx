@@ -8,6 +8,7 @@ import { useThemeStore } from "../../../../store/themeStore";
 import { useLocale, useTranslations } from "next-intl";
 import { ArrowLeftCircle, ArrowRightCircle } from "lucide-react";
 import Image from "next/image";
+import { useGoBackTvStore } from "../../../../store/goBackTvStore";
 
 const TvShows = () => {
   const t = useTranslations("Other");
@@ -22,6 +23,7 @@ const TvShows = () => {
   const [activeLoadingId, setActiveLoadingId] = useState(null);
   const [loading2,setLoading2] = useState(false);
   const [loading3,setLoading3] = useState(false);
+  const { addId } = useGoBackTvStore.getState();
 
   const getAllTvShows = async (page = 1) => {
     setIsLoading(true);
@@ -74,6 +76,7 @@ const TvShows = () => {
 
   const handleTvShowClick = (id) => {
     setActiveLoadingId(id);
+    addId(id);
     router.push(`/${locale}/tv-shows/${id}`);
   };
 

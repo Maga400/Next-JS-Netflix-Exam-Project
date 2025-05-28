@@ -62,7 +62,8 @@
     "/home":"/дом",
     "/movies":"/фильмы",
     "/tv_shows":"/телешоу",
-    "search_placeholder":"Поиск..."
+    "search_placeholder":"Поиск...",
+    "/profile":"/профиль"
   },
   "Language":{
     "azerbaijan":"Азербайджан",

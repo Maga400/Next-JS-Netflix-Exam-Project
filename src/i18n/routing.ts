@@ -24,6 +24,12 @@ export const routing = defineRouting({
       de:"/heim",
       az:"/ev"
     },
+    "/profile":{
+      en:"/profile",
+      ru:"/профиль",
+      de:"/profil",
+      az:"/profil"
+    },
     "/movies":{
       en:"/movies",
       ru:"/фильмы",

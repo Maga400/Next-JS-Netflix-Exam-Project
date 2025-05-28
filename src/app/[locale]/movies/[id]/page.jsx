@@ -12,6 +12,7 @@ import { useTranslations, useLocale } from "next-intl";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import Loading2 from "../../../../components/Loading2";
+import {useGoBackStore} from "../../../../../store/goBackStore";
 
 const Movie = ({ params }) => {
   const t = useTranslations("Movies");
@@ -32,6 +33,7 @@ const Movie = ({ params }) => {
   const [loading, setLoading] = useState(false);
   const [loading2, setLoading2] = useState(false);
   const [activeLoadingId, setActiveLoadingId] = useState(null);
+  const { addId, removeLastId, getLastId, ids,getPreviousToLastId } = useGoBackStore.getState();
   // const pathname = usePathname();
   // const normalize = (url) => decodeURIComponent(url);
   // const currentPath = normalize(pathname);
@@ -120,7 +122,36 @@ const Movie = ({ params }) => {
 
   const handleMovieClick = (id) => {
     setActiveLoadingId(id);
-    router.push(`/${locale}/movies/${id}`);
+    addId(id);
+    const params = searchParams.toString();
+    router.push(`/${locale}/movies/${id}?${params}`);
+  };
+
+  const goBack = () => {
+    setLoading(true);
+    const params = searchParams.toString();
+    const id = getPreviousToLastId();
+    const lastId = getLastId();
+    if(id){
+      router.push(`/${locale}/movies/${id}?${params}`);
+      removeLastId();
+    }
+    else if (!from) {
+      router.push(`/${locale}/movies`);
+      removeLastId();
+    }
+    else if (from === "home") {
+      router.push(`/${locale}/home`);
+      removeLastId();
+    }
+    else if (from === "genre") {
+      router.push(`/${locale}/movies/genre`);
+      removeLastId();
+    }
+    else if (from === "category") {
+      router.push(`/${locale}/movies/category`);
+      removeLastId();
+    }
   };
 
   return (
@@ -131,12 +162,7 @@ const Movie = ({ params }) => {
     >
       <div className="flex flex-row justify-between pt-[20px] md:pt-[25px] xl:pt-[30px] mx-[20px] md:mx-[60px] xl:mx-[40px]">
         <button
-          onClick={() => {
-            setLoading(true);
-            from === "home"
-              ? router.push(`/${locale}/home`)
-              : router.push(`/${locale}/movies`);
-          }}
+          onClick={goBack}
           className={`flex items-center gap-2 px-4 py-2 rounded-full shadow-md transition-all duration-200 hover:cursor-pointer ${
             theme
               ? "bg-[#1F1F1F] hover:bg-[#2a2a2a] text-white"

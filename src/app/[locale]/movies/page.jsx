@@ -8,6 +8,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { ArrowLeftCircle, ArrowRightCircle } from "lucide-react";
 import Image from "next/image";
 import Loading2 from "../../../components/Loading2";
+import {useGoBackStore} from "../../../../store/goBackStore";
 
 const Movies = () => {
   const t = useTranslations("Other");
@@ -22,6 +23,7 @@ const Movies = () => {
   const [activeLoadingId, setActiveLoadingId] = useState(null);
   const [loading2, setLoading2] = useState(false);
   const [loading3, setLoading3] = useState(false);
+  const { addId } = useGoBackStore.getState();
 
   const getAllMovies = async (page = 1) => {
     setIsLoading(true);
@@ -73,6 +75,7 @@ const Movies = () => {
   }, []);
 
   const handleMovieClick = (id) => {
+    addId(id);
     setActiveLoadingId(id);
     router.push(`/${locale}/movies/${id}`);
   };

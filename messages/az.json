@@ -62,7 +62,8 @@
     "/home": "/ev",
     "/movies": "/filmlər",
     "/tv_shows": "/televiziya-şouları",
-    "search_placeholder":"Axtar..."
+    "search_placeholder":"Axtar...",
+    "/profile":"/profil"
   },
   "Language": {
     "azerbaijan": "Azərbaycan",

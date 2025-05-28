@@ -10,6 +10,7 @@ import Loading2 from "../../../../components/Loading2";
 import { ArrowLeft, ArrowRightCircle, ArrowLeftCircle } from "lucide-react";
 import LanguageSelector from "@/components/LanguageSelector";
 import ThemeToggle from "@/components/ThemeToggle";
+import { useGoBackTvStore } from "../../../../../store/goBackTvStore";
 
 const Category = () => {
   const t = useTranslations("Category");
@@ -26,6 +27,7 @@ const Category = () => {
   const [loading, setLoading] = useState(false);
   const [path, setPath] = useState(false);
   const selectRef = useRef(null);
+  const { addId } = useGoBackTvStore.getState();
 
   const tvShowCategories = [
     { label: t("top_rated"), value: "top_rated" },
@@ -89,7 +91,8 @@ const Category = () => {
 
   const handleMovieClick = (id) => {
     setActiveLoadingId(id);
-    router.push(`/${locale}/tv-shows/${id}`);
+    addId(id);
+    router.push(`/${locale}/tv-shows/${id}?from=category`);
   };
 
   useEffect(() => {

@@ -7,6 +7,7 @@ import Image from "next/image";
 import Loading from "@/components/Loading";
 import { useRouter } from "next/navigation";
 import Loading2 from "../../../components/Loading2";
+import { useGoBackStore } from "../../../../store/goBackStore";
 
 const Home = () => {
   const t = useTranslations("Home");
@@ -18,6 +19,7 @@ const Home = () => {
   const [loading3, setLoading3] = useState(false);
   const [movie, setMovie] = useState({});
   const router = useRouter();
+  const { addId } = useGoBackStore.getState();
 
   const getTrendingMovie = async () => {
     setLoading(true);
@@ -133,6 +135,7 @@ const Home = () => {
               <button
                 onClick={() => {
                   setLoading2(true);
+                  addId(movie.id);
                   router.push(`/${locale}/movies/${movie.id}?from=home`);
                 }}
                 className={`
@@ -143,15 +146,19 @@ const Home = () => {
       ${isDark ? "bg-white text-black" : "bg-black text-white"}
     `}
               >
-                {loading2 ? <Loading2 bg={theme ? "border-black" : "border-white"} /> : t("play")}
+                {loading2 ? (
+                  <Loading2 bg={theme ? "border-black" : "border-white"} />
+                ) : (
+                  t("play")
+                )}
               </button>
 
               <button
-                onClick={() =>{
+                onClick={() => {
                   setLoading3(true);
                   router.push(
                     `/${locale}/movies/${movie.id}/more-info?from=home`
-                  )
+                  );
                 }}
                 className={`
       hover:cursor-pointer

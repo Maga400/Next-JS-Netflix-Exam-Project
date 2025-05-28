@@ -1,8 +1,8 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { useThemeStore } from "../../store/themeStore";
-import { useTranslations,useLocale } from "next-intl";
-import { useRouter, usePathname } from "next/navigation";
+import { useTranslations, useLocale } from "next-intl";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 
 export default function LanguageSelector() {
   const t = useTranslations("Language");
@@ -11,19 +11,28 @@ export default function LanguageSelector() {
   const selectRef = useRef(null);
   const theme = useThemeStore((state) => state.theme);
   const router = useRouter();
-  const pathname = usePathname();
-  // const locale = 
+  const pathname = usePathname(); // örn: /en/register
+  const searchParams = useSearchParams();
+  // const locale =
 
   const handleLanguageChange = (e) => {
-    const selectedLang = e.target.value;
+  const selectedLang = e.target.value;
 
-    // URL yolunu parçalayarak mevcut yolu yeni dile göre değiştiriyoruz
-    const segments = pathname.split("/");
-    segments[1] = selectedLang; // /en/... → /az/...
+  const currentPath = pathname;
+  const params = searchParams.toString(); // varsa query string: ?email=... gibi
 
-    const newPath = segments.join("/");
-    router.replace(newPath); // Yeni dildeki sayfaya yönlendir
-  };
+  const segments = currentPath.split("/");
+
+  // Mevcut dil kodunu değiştir (örneğin 'en' → 'az')
+  segments[1] = selectedLang;
+
+  const newPath = segments.join("/");
+
+  // Query string varsa ekle
+  const finalUrl = params ? `${newPath}?${params}` : newPath;
+
+  router.replace(finalUrl); // Yeni dile yönlendir (query string ile birlikte)
+};
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -39,7 +48,10 @@ export default function LanguageSelector() {
   }, []);
 
   return (
-    <div ref={selectRef} className="relative ml-[10px] md:ml-[15px] xl:ml-[20px]">
+    <div
+      ref={selectRef}
+      className="relative ml-[10px] md:ml-[15px] xl:ml-[20px]"
+    >
       <img
         src="/icons/lang-icon.svg"
         alt="lang-icon"
@@ -50,7 +62,9 @@ export default function LanguageSelector() {
         value={locale}
         onClick={() => setPath((prev) => !prev)}
         onChange={handleLanguageChange}
-        className={`w-[120px] md:w-[140px] xl:w-[180px] appearance-none ${theme ? "bg-[#27272A]" : "bg-[#636366]"} text-white text-[10px] md:text-[12px] xl:text-[14px] leading-[16px] md:leading-[20px] xl:leading-[24px] border-[1px] border-[#A1A1AA] py-[5px] md:py-[6px] xl:py-[7px] pl-[25px] md:pl-[30px] xl:pl-[40px] rounded-[5px] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
+        className={`w-[120px] md:w-[140px] xl:w-[180px] appearance-none ${
+          theme ? "bg-[#27272A]" : "bg-[#636366]"
+        } text-white text-[10px] md:text-[12px] xl:text-[14px] leading-[16px] md:leading-[20px] xl:leading-[24px] border-[1px] border-[#A1A1AA] py-[5px] md:py-[6px] xl:py-[7px] pl-[25px] md:pl-[30px] xl:pl-[40px] rounded-[5px] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
       >
         <option value="en">{t("english")}</option>
         <option value="ru">{t("russian")}</option>

@@ -11,6 +11,7 @@ import { useTranslations, useLocale } from "next-intl";
 import Image from "next/image";
 import Loading2 from "../../../../components/Loading2";
 import { useSearchParams } from "next/navigation";
+import { useGoBackTvStore } from "../../../../../store/goBackTvStore";
 
 const TvShow = ({ params }) => {
   const locale = useLocale();
@@ -30,7 +31,9 @@ const TvShow = ({ params }) => {
   const [loading2, setLoading2] = useState(false);
   const [activeLoadingId, setActiveLoadingId] = useState(null);
   const searchParams = useSearchParams();
-  const movieId = searchParams.get("movieId");
+  const from = searchParams.get("from");
+  const { addId, removeLastId, getLastId, ids, getPreviousToLastId } =
+    useGoBackTvStore.getState();
 
   const scrollLeft = () => {
     scrollRef.current.scrollBy({ left: -300, behavior: "smooth" });
@@ -115,7 +118,29 @@ const TvShow = ({ params }) => {
 
   const handleTvShowClick = (id) => {
     setActiveLoadingId(id);
-    router.push(`/${locale}/tv-shows/${id}`);
+    addId(id);
+    const params = searchParams.toString();
+    router.push(`/${locale}/tv-shows/${id}?${params}`);
+  };
+
+  const goBack = () => {
+    setLoading(true);
+    const params = searchParams.toString();
+    const id = getPreviousToLastId();
+    const lastId = getLastId();
+    if (id) {
+      router.push(`/${locale}/tv-shows/${id}?${params}`);
+      removeLastId();
+    } else if (!from) {
+      router.push(`/${locale}/tv-shows`);
+      removeLastId();
+    } else if (from === "category") {
+      router.push(`/${locale}/tv-shows/category`);
+      removeLastId();
+    } else if (from === "genre") {
+      router.push(`/${locale}/tv-shows/genre`);
+      removeLastId();
+    }
   };
 
   return (
@@ -126,10 +151,7 @@ const TvShow = ({ params }) => {
     >
       <div className="flex flex-row justify-between items-center pt-[20px] md:pt-[25px] xl:pt-[30px] mx-[20px] md:mx-[60px] xl:mx-[40px]">
         <button
-          onClick={() => {
-            setLoading(true);
-            router.push(`/${locale}/tv-shows`);
-          }}
+          onClick={goBack}
           className={`flex items-center gap-2 ${
             theme
               ? "bg-[#1F1F1F] hover:bg-[#2a2a2a] text-white"

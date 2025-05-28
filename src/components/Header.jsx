@@ -13,6 +13,7 @@ const Header = () => {
   const pathname = usePathname();
   const theme = useThemeStore((state) => state.theme);
   const locale = useLocale();
+  const [loading, setLoading] = useState(false);
 
   // "/tr/movies" -> "/movies"
   const normalize = (url) => decodeURIComponent(url.replace(`/${locale}`, ""));
@@ -205,14 +206,29 @@ const Header = () => {
           </button>
         </form>
 
-        {/* Sağ: Tema ve Dil (her zaman görünür) */}
         <div className="flex items-center z-60">
           <ThemeToggle />
           <LanguageSelector />
+          <div
+            onClick={() => {
+              navigate(`/${locale}/profile`, "profile", t("/profile"));
+            }}
+          >
+            {activeNav === "profile" ? (
+              <div className="ml-[20px]">
+                <Loading />
+              </div>
+            ) : (
+              <img
+                src={theme ? "/icons/user-icon2.svg" : "/icons/user-icon.svg"}
+                alt="Profile"
+                className="object-contain w-[35px] h-[35px] md:w-[40px] md:h-[40px] xl:w-[45px] xl:h-[45px] ml-[20px]"
+              />
+            )}
+          </div>
         </div>
       </header>
 
-      {/* Mobil Menü (sadece md altı için görünür) */}
       <nav
         className={`xl:hidden fixed top-[56px] left-0 w-64 max-w-[80vw] h-[calc(100vh-56px)] ${
           theme ? "bg-zinc-900" : "bg-white"
@@ -250,7 +266,6 @@ const Header = () => {
           {activeNav === "tv_shows" ? <Loading /> : t("tv_shows")}
         </h2>
 
-        {/* Mobil arama kutusu */}
         <form
           onSubmit={handleSearchSubmit}
           className="flex border rounded-md overflow-hidden"
