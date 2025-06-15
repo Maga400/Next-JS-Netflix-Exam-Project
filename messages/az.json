@@ -100,7 +100,8 @@
     "password_min_length": "Şifrə ən azı 8 simvol olmalıdır.",
     "password_complexity": "Şifrə ən azı 1 böyük hərf, 1 kiçik hərf, 1 rəqəm və 1 simvol daxil etməlidir.",
     "password_required":"Parol boş olmamalıdır.",
-    "network_error":"Şəbəkə xətası baş verdi. Yenidən cəhd edin."
+    "network_error":"Şəbəkə xətası baş verdi. Yenidən cəhd edin.",
+    "image_required":"Şəkil tələb olunur"
   },
   "Home": {
     "invited": "Hörmətlə Dəvət olunursunuz",
@@ -158,5 +159,18 @@
     "now_playing":"İndi oynayır",
     "on_the_air": "Efirdə",
     "airing_today": "Bu gün Yayılır"
+  },
+  "Profile": {
+    "logout": "Çıxın"
+  },
+  "Verification": {
+    "enter_code": "Doğrulama kodunu daxil edin",
+    "sent_code": "E-poçtunuza 6 rəqəmli kod göndərdik.",
+    "verifying": "Doğrulanır...",
+    "verify": "Doğrulayın",
+    "not_received": "Kodu almadınız?",
+    "resend": "Yenidən göndərin",
+    "verification_code": "Doğrulama kodu yanlışdır. Yenidən cəhd edin.",
+    "code_length_error":"Doğrulama kodu 6 rəqəmli olmalıdır."
   }
 }

@@ -63,7 +63,7 @@ const Category = () => {
   const handleCategoryChange = (e) => {
     const newCategory = e.target.value;
     setSelectedCategory(newCategory);
-    setPage(1); // Yeni kategori seçilince sayfa sıfırlanmalı
+    setPage(1);
   };
 
   useEffect(() => {
@@ -114,7 +114,6 @@ const Category = () => {
       className={`w-full min-h-screen transition-colors duration-300 px-4 py-6 sm:px-6 sm:py-8 md:px-12 md:py-10 lg:px-20 lg:py-12 xl:px-[90px] xl:py-[30px] 
       ${theme ? "bg-black text-white" : "bg-white text-black"}`}
     >
-      {/* Header */}
       <div className="flex flex-row justify-between">
         <button
           onClick={() => {
@@ -143,17 +142,15 @@ const Category = () => {
               onClick={() => setPath((prev) => !prev)}
               value={selectedCategory}
               onChange={handleCategoryChange}
-                    //   className={`w-[120px] md:w-[140px] xl:w-[180px] appearance-none ${theme ? "bg-[#27272A]" : "bg-[#636366]"} text-white text-[10px] md:text-[12px] xl:text-[14px] leading-[16px] md:leading-[20px] xl:leading-[24px] border-[1px] border-[#A1A1AA] py-[5px] md:py-[6px] xl:py-[7px] pl-[25px] md:pl-[30px] xl:pl-[40px] rounded-[5px] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
-
               className={`w-full ${
                 theme
                   ? "bg-[#27272A] border-[#A1A1AA]"
                   : "bg-[#636366] border-black"
               } text-white appearance-none text-[11px] md:text-[12px] xl:text-[13px] leading-[16px] md:leading-[20px] xl:leading-[24px] border-[1px] py-[5px] md:py-[6px] xl:py-[7px] px-[10px] rounded-[5px] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
             >
-              {movieCategories.map((category) => (
-                <option key={category.value} value={category.value}>
-                  {category.label}
+              {movieCategories?.map((category) => (
+                <option key={category?.value} value={category?.value}>
+                  {category?.label}
                 </option>
               ))}
             </select>

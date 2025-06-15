@@ -62,7 +62,7 @@ const Home = () => {
 
       <div
         className={`w-full h-full absolute top-0 ${
-          isDark ? "bg-black/50" : "bg-white/70"
+          isDark ? "bg-black/50" : "bg-black/10"
         }`}
       ></div>
 
@@ -98,7 +98,7 @@ const Home = () => {
                 ${isDark ? "text-white" : "text-black"}
               `}
             >
-              {movie.title}
+              {movie?.title}
             </h1>
 
             <div className="flex items-center mt-4 sm:mt-6">
@@ -125,18 +125,18 @@ const Home = () => {
                 text-sm sm:text-base md:text-[16px]
                 leading-relaxed
                 max-w-[90%] sm:max-w-[800px]
-                ${isDark ? "text-white/90" : "text-black/80"}
+                ${isDark ? "text-white/90" : "text-white/100"}
               `}
             >
-              {movie.overview}
+              {movie?.overview}
             </p>
 
             <div className="flex flex-col sm:flex-row mt-6 gap-3 sm:gap-4">
               <button
                 onClick={() => {
                   setLoading2(true);
-                  addId(movie.id);
-                  router.push(`/${locale}/movies/${movie.id}?from=home`);
+                  addId(movie?.id);
+                  router.push(`/${locale}/movies/${movie?.id}?from=home`);
                 }}
                 className={`
       hover:cursor-pointer
@@ -157,7 +157,7 @@ const Home = () => {
                 onClick={() => {
                   setLoading3(true);
                   router.push(
-                    `/${locale}/movies/${movie.id}/more-info?from=home`
+                    `/${locale}/movies/${movie?.id}/more-info?from=home`
                   );
                 }}
                 className={`

@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useEffect, useRef } from "react";
 import { useThemeStore } from "../../store/themeStore";
 import { useTranslations, useLocale } from "next-intl";
@@ -11,28 +12,25 @@ export default function LanguageSelector() {
   const selectRef = useRef(null);
   const theme = useThemeStore((state) => state.theme);
   const router = useRouter();
-  const pathname = usePathname(); // örn: /en/register
+  const pathname = usePathname();
   const searchParams = useSearchParams();
-  // const locale =
 
   const handleLanguageChange = (e) => {
-  const selectedLang = e.target.value;
+    const selectedLang = e.target.value;
 
-  const currentPath = pathname;
-  const params = searchParams.toString(); // varsa query string: ?email=... gibi
+    const currentPath = pathname;
+    const params = searchParams.toString();
 
-  const segments = currentPath.split("/");
+    const segments = currentPath.split("/");
 
-  // Mevcut dil kodunu değiştir (örneğin 'en' → 'az')
-  segments[1] = selectedLang;
+    segments[1] = selectedLang;
 
-  const newPath = segments.join("/");
+    const newPath = segments.join("/");
 
-  // Query string varsa ekle
-  const finalUrl = params ? `${newPath}?${params}` : newPath;
+    const finalUrl = params ? `${newPath}?${params}` : newPath;
 
-  router.replace(finalUrl); // Yeni dile yönlendir (query string ile birlikte)
-};
+    router.replace(finalUrl);
+  };
 
   useEffect(() => {
     const handleClickOutside = (event) => {

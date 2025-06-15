@@ -12,83 +12,89 @@ export const routing = defineRouting({
       de: "/anmelden",
       az: "/daxil-ol",
     },
-    "/register":{
+    "/register": {
       en: "/register",
       ru: "/зарегистрироваться",
       de: "/registrieren",
       az: "/qeydiyyat",
     },
-    "/home":{
-      en:"/home",
-      ru:"/дом",
-      de:"/heim",
-      az:"/ev"
+    "/verification": {
+      en: "/verification",
+      ru: "/проверка",
+      de: "/überprüfung",
+      az: "/yoxlama",
     },
-    "/profile":{
-      en:"/profile",
-      ru:"/профиль",
-      de:"/profil",
-      az:"/profil"
+    "/home": {
+      en: "/home",
+      ru: "/дом",
+      de: "/heim",
+      az: "/ev",
     },
-    "/movies":{
-      en:"/movies",
-      ru:"/фильмы",
-      de:"/filme",
-      az:"/filmlər"
+    "/profile": {
+      en: "/profile",
+      ru: "/профиль",
+      de: "/profil",
+      az: "/profil",
     },
-    "/movies/category":{
-      en:"/movies/category",
-      ru:"/фильмы/категория",
-      de:"/filme/kategorie",
-      az:"/filmlər/kateqoriya"
+    "/movies": {
+      en: "/movies",
+      ru: "/фильмы",
+      de: "/filme",
+      az: "/filmlər",
     },
-    "/movies/genre":{
-      en:"/movies/genre",
-      ru:"/фильмы/жанр",
-      de:"/filme/genre",
-      az:"/filmlər/janr"
+    "/movies/category": {
+      en: "/movies/category",
+      ru: "/фильмы/категория",
+      de: "/filme/kategorie",
+      az: "/filmlər/kateqoriya",
     },
-    "/movies/[id]":{
-      en:"/movies/[id]",
-      ru:"/фильмы/[id]",
-      de:"/filme/[id]",
-      az:"/filmlər/[id]"
+    "/movies/genre": {
+      en: "/movies/genre",
+      ru: "/фильмы/жанр",
+      de: "/filme/genre",
+      az: "/filmlər/janr",
     },
-    "/movies/[id]/more-info":{
-      en:"/movies/[id]/more-info",
-      ru:"/фильмы/[id]/больше-информации",
-      de:"/filme/[id]/mehr-infos",
-      az:"/filmlər/[id]/ətraflı-məlumat"
+    "/movies/[id]": {
+      en: "/movies/[id]",
+      ru: "/фильмы/[id]",
+      de: "/filme/[id]",
+      az: "/filmlər/[id]",
     },
-    "/tv-shows":{
-      en:"/tv-shows",
-      ru:"/телешоу",
-      de:"/fernsehsendungen",
-      az:"/televiziya-şouları"
+    "/movies/[id]/more-info": {
+      en: "/movies/[id]/more-info",
+      ru: "/фильмы/[id]/больше-информации",
+      de: "/filme/[id]/mehr-infos",
+      az: "/filmlər/[id]/ətraflı-məlumat",
     },
-    "/tv-shows/category":{
-      en:"/tv-shows/category",
-      ru:"/телешоу/категория",
-      de:"/fernsehsendungen/kategorie",
-      az:"/televiziya-şouları/kateqoriya"
+    "/tv-shows": {
+      en: "/tv-shows",
+      ru: "/телешоу",
+      de: "/fernsehsendungen",
+      az: "/televiziya-şouları",
     },
-    "/tv-shows/genre":{
-      en:"/tv-shows/genre",
-      ru:"/телешоу/жанр",
-      de:"/fernsehsendungen/genre",
-      az:"/televiziya-şouları/janr"
+    "/tv-shows/category": {
+      en: "/tv-shows/category",
+      ru: "/телешоу/категория",
+      de: "/fernsehsendungen/kategorie",
+      az: "/televiziya-şouları/kateqoriya",
     },
-    "/tv-shows/[id]":{
-      en:"/tv-shows/[id]",
-      ru:"/телешоу/[id]",
-      de:"/fernsehsendungen/[id]",
-      az:"/televiziya-şouları/[id]"
+    "/tv-shows/genre": {
+      en: "/tv-shows/genre",
+      ru: "/телешоу/жанр",
+      de: "/fernsehsendungen/genre",
+      az: "/televiziya-şouları/janr",
     },
-    "/tv-shows/[id]/more-info":{
-      en:"/tv-shows/[id]/more-info",
-      ru:"/телешоу/[id]/больше-информации",
-      de:"/fernsehsendungen/[id]/mehr-infos",
-      az:"/televiziya-şouları/[id]/ətraflı-məlumat"
-    }
+    "/tv-shows/[id]": {
+      en: "/tv-shows/[id]",
+      ru: "/телешоу/[id]",
+      de: "/fernsehsendungen/[id]",
+      az: "/televiziya-şouları/[id]",
+    },
+    "/tv-shows/[id]/more-info": {
+      en: "/tv-shows/[id]/more-info",
+      ru: "/телешоу/[id]/больше-информации",
+      de: "/fernsehsendungen/[id]/mehr-infos",
+      az: "/televiziya-şouları/[id]/ətraflı-məlumat",
+    },
   },
 });

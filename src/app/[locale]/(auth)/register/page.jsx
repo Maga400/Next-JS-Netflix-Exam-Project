@@ -1,5 +1,4 @@
 "use client";
-import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import LanguageSelector from "@/components/LanguageSelector";
 import { toast } from "react-hot-toast";
@@ -7,6 +6,10 @@ import ThemeToggle from "@/components/ThemeToggle";
 import { useThemeStore } from "../../../../../store/themeStore";
 import { useTranslations, useLocale } from "next-intl";
 import Loading from "@/components/Loading2";
+import { useRef, useState } from "react";
+import Image from "next/image";
+import { Pencil } from "lucide-react";
+import Cookie from "js-cookie";
 
 const getFullLanguageName = (locale) => {
   return new Intl.DisplayNames([locale], { type: "language" }).of(locale);
@@ -23,14 +26,23 @@ const Register = () => {
     username: "",
     email: emailParam || "",
     password: "",
+    imagePath: "",
+    role: "user",
   });
   const theme = useThemeStore((state) => state.theme);
   const [loading, setLoading] = useState(false);
   const [loading2, setLoading2] = useState(false);
   const [loading3, setLoading3] = useState(false);
+  const [imageUrl, setImageUrl] = useState(null);
+  const fileInputRef = useRef(null);
 
-  const validate = () => {
-    const { username, email, password } = data;
+  const validate = async () => {
+    const { username, email, password, imagePath } = data;
+
+    if (!imagePath) {
+      toast.error(t("image_required"));
+      return false;
+    }
 
     if (!username.trim()) {
       toast.error(t("username_required"));
@@ -48,6 +60,11 @@ const Register = () => {
       return false;
     }
 
+    const userNotExists = await checkUser();
+    if (!userNotExists) {
+      return false;
+    }
+
     if (password.length < 8) {
       toast.error(t("password_min_length"));
       return false;
@@ -62,35 +79,103 @@ const Register = () => {
     return true;
   };
 
-  const register = async () => {
-    if (!validate()) return;
-
+  const checkUser = async () => {
     try {
-      setLoading(true);
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_IP_URL}/Auth/register`,
+        `${process.env.NEXT_PUBLIC_IP_URL}/Auth/existUser?email=${data.email}`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
           },
-          body: JSON.stringify(data),
+        }
+      );
+
+      if (!response.ok) {
+        const resData = await response.json();
+        toast.error(resData.message);
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error("Error checking user existence:", error);
+      toast.error(t("something_went_wrong"));
+      return false;
+    }
+  };
+
+  const register = async () => {
+    const isValid = await validate();
+    if (!isValid) return;
+
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_IP_URL}/Email/emailVerificationCode`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({ email: data.email }),
         }
       );
 
       const resData = await response.json();
 
       if (response.ok) {
-        router.push(`/${locale}/login`);
-      } else {
-        toast.error(resData.message || t("something_went_wrong"));
+        Cookie.set("code", resData.code);
+        localStorage.setItem("registerData", JSON.stringify(data));
+        router.push(`/${locale}/verification`);
       }
     } catch (error) {
-      console.error(error);
+      console.error("Error sending verification code:", error);
       toast.error(t("something_went_wrong"));
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImageUrl(reader.result);
+      };
+      reader.readAsDataURL(file);
+
+      await uploadImageCloud(file);
+    }
+  };
+
+  const uploadImageCloud = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_IP_URL}/Image`, {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setData((prev) => ({
+          ...prev,
+          imagePath: result.imagePath,
+        }));
+      } else {
+        toast.error(result.message || "Image upload failed!");
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast.error("Something went wrong while uploading the image.");
     }
   };
 
@@ -108,7 +193,7 @@ const Register = () => {
         />
         <div
           className={`${
-            theme ? "bg-[#000000B2]" : "bg-[#666666]"
+            theme ? "bg-[#000000B2]" : "bg-[#4d4d4d]"
           } opacity-[50%] w-full h-[750px] absolute hidden md:block`}
         ></div>
         <div className="w-full absolute top-[25px] px-[25px] xl:px-[160px] flex flex-row justify-between items-center">
@@ -135,19 +220,42 @@ const Register = () => {
         </div>
         <div
           className={`w-full md:w-[460px] ${
-            theme ? "md:bg-[#000000B2]" : "md:bg-[#FFFFFFB2]"
-          } absolute top-0 mt-[100px] md:mt-[110px] xl:mt-[160px] px-[20px] py-[0px] md:px-[70px] md:py-[50px]`}
+            theme ? "md:bg-[#000000B2]" : "md:bg-[#E5E5E5B2]"
+          } absolute top-0 mt-[80px] md:mt-[90px] xl:mt-[80px] px-[20px] py-[0px] md:px-[70px] md:py-[30px]`}
         >
-          <h2 className="text-[32px] font-bold leading-[100%]">
+          <h2 className="text-[24px] md:text-[28px] xl:text-[32px] font-bold leading-[100%]">
             {t("sign_up")}
           </h2>
           <div className="flex flex-col">
+            <div className="relative w-30 h-30 md:w-35 md:h-35 xl:w-40 xl:h-40 flex justify-center items-center m-auto mt-[15px]">
+              <Image
+                src={imageUrl || "/default-profile.png"}
+                alt=""
+                width={100}
+                height={100}
+                className="rounded-full object-cover border-4 border-white shadow-md w-full h-full m-auto"
+              />
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+              />
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="absolute bottom-1 right-1 bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-full border-2 border-white shadow-lg"
+              >
+                <Pencil size={18} />
+              </button>
+            </div>
+
             <input
               value={data.username}
               onChange={(e) => setData({ ...data, username: e.target.value })}
               type="text"
               placeholder={t("username")}
-              className={`w-full md:w-[320px] mt-[30px] border-[1px] px-[15px] py-[20px] rounded-[5px] text-[16px]
+              className={`w-full md:w-[320px] mt-[15px] border-[1px] px-[15px] py-[20px] rounded-[5px] text-[16px]
               ${
                 theme
                   ? "bg-[#161616B2] border-[#808080B2] text-white placeholder:text-white"
@@ -196,11 +304,11 @@ const Register = () => {
               setLoading2(true);
               router.push(`/${locale}/login`);
             }}
-            className="flex flex-row justify-center mt-[30px] hover:cursor-pointer"
+            className="flex flex-row justify-center mt-[20px] hover:cursor-pointer"
           >
             {loading2 ? (
               <div className="flex justify-center items-center">
-                <Loading /> 
+                <Loading />
               </div>
             ) : (
               <div className="flex flex-row justify-center">
@@ -224,12 +332,11 @@ const Register = () => {
         </div>
         <div
           className={`w-full absolute bottom-[0px] h-[50px] ${
-            theme ? "bg-[#000000B2]" : "bg-[#FFFFFFB2]"
+            theme ? "bg-[#000000B2]" : "bg-[#E5E5E5B2]"
           }`}
         ></div>
       </div>
 
-      {/* Footer */}
       <div
         className={`${
           theme ? "bg-black text-white" : "bg-white text-black"

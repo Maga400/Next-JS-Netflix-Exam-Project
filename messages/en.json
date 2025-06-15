@@ -63,7 +63,7 @@
     "/movies": "/movies",
     "/tv_shows": "/tv-shows",
     "search_placeholder": "Search...",
-    "/profile":"/profile"
+    "/profile": "/profile"
   },
   "Language": {
     "azerbaijan": "Azerbaijan",
@@ -100,7 +100,8 @@
     "password_min_length": "Password must be at least 8 characters long.",
     "password_complexity": "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 symbol.",
     "password_required": "Password must not be required.",
-    "network_error": "A network error occurred. Please try again."
+    "network_error": "A network error occurred. Please try again.",
+    "image_required": "Image required"
   },
   "Home": {
     "invited": "You're Cordially Invited",
@@ -158,5 +159,18 @@
     "now_playing": "Now Playing",
     "on_the_air": "On The Air",
     "airing_today": "Airing Today"
+  },
+  "Profile": {
+    "logout": "Logout"
+  },
+  "Verification": {
+    "enter_code": "Enter Verification Code",
+    "sent_code": "We've sent a 6-digit code to your email.",
+    "verifying": "Verifying...",
+    "verify": "Verify",
+    "not_received": "Didn't receive the code?",
+    "resend": "Resend",
+    "verification_code": "Verification code is incorrect. Please try again.",
+    "code_length_error":"Verification code must be 6 digits long."
   }
 }

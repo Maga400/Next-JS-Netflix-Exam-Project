@@ -1,12 +1,3 @@
-// export default function HomePage() {
-//   return (
-//     <div>
-//       <h1>{t('title')}</h1>
-//       {/* <Link href="/about">{t('about')}</Link> */}
-//     </div>
-//   );
-// }
-
 "use client";
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
@@ -101,7 +92,7 @@ const Landing = () => {
   const [email, setEmail] = useState("");
   const [loading2, setLoading2] = useState(false);
   const [loading3, setLoading3] = useState(false);
-  
+
   const getTrendingMovies = async () => {
     setLoading(true);
     try {
@@ -175,7 +166,7 @@ const Landing = () => {
   return (
     <div
       className={`${
-        theme ? "bg-black text-white" : "bg-white text-black"
+        theme ? "bg-black text-white" : "bg-gray-50 text-gray-900"
       } w-full h-screen`}
     >
       <div className="relative flex flex-col justify-center items-center">
@@ -276,11 +267,8 @@ const Landing = () => {
             <select
               onClick={() => setPath((prev) => !prev)}
               onChange={(e) => setType(e.target.value)}
-              className={`w-full ${
-                theme
-                  ? "bg-[#27272A] border-[#A1A1AA]"
-                  : "bg-[#636366] border-black"
-              } text-white appearance-none text-[12px] md:text-[13px] xl:text-[14px] leading-[16px] md:leading-[20px] xl:leading-[24px] border-[1px] py-[8px] md:py-[9px] xl:py-[10px] px-[10px] rounded-[5px] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
+              className={`w-full bg-[#27272A] text-white border-[#A1A1AA]
+              appearance-none text-[12px] md:text-[13px] xl:text-[14px] leading-[16px] md:leading-[20px] xl:leading-[24px] border-[1px] py-[8px] md:py-[9px] xl:py-[10px] px-[10px] rounded-[5px] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
             >
               <option value="movie">{t("movie")}</option>
               <option value="tv">{t("tv_shows")}</option>
@@ -294,7 +282,6 @@ const Landing = () => {
           </div>
 
           <div className="mt-[50px]">
-            {/* Mobil & Tablet (scrollable) */}
             {(type === "movie" || type === "tv") && (
               <div className="xl:hidden">
                 <div className="flex gap-[15px] md:gap-[20px] overflow-x-auto custom-scroll whitespace-nowrap scroll-smooth">
@@ -323,12 +310,11 @@ const Landing = () => {
               </div>
             )}
 
-            {/* Desktop (grid) */}
             <div className="hidden xl:grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mt-[30px]">
               {(type === "movie" ? movies : tvShows)?.map(
                 (item) =>
                   item && (
-                    <div key={item?.id} className="w-full">
+                    <div key={item?.id} className="cursor-pointer group relative rounded-xl overflow-hidden shadow-lg transform transition-transform hover:scale-105 w-full h-[400px]">
                       <img
                         src={
                           item?.poster_path || item?.backdrop_path
@@ -345,14 +331,12 @@ const Landing = () => {
               )}
             </div>
 
-            {/* Loading */}
             {(loading && type === "movie") || (tvLoading && type === "tv") ? (
               <div className="w-full flex justify-center items-center mt-4">
                 <Loading />
               </div>
             ) : null}
 
-            {/* Scrollbar stili */}
             <style jsx>{`
               .custom-scroll {
                 scrollbar-width: thin;
@@ -380,20 +364,24 @@ const Landing = () => {
         </h3>
 
         <div className="grid grid-cols-2 xl:grid-cols-4 gap-[10px] md:gap-[12px] xl:gap-[15px] mt-[20px]">
-          {cards.map((card) => (
+          {cards?.map((card) => (
             <div
-              key={card.id}
-              className="bg-[#192247] rounded-[10px] flex flex-col justify-between px-[14px] md:px-[15px] xl:px-[15px] py-[15px] md:py-[18px] xl:py-[20px]"
+              key={card?.id}
+              className={`${
+                theme
+                  ? "bg-[#192247] text-white"
+                  : "bg-white text-gray-800 border border-gray-200 shadow-sm"
+              } rounded-[10px] flex flex-col justify-between px-[14px] md:px-[15px] xl:px-[15px] py-[15px] md:py-[18px] xl:py-[20px]`}
             >
-              <h3 className="text-white font-bold text-[20px] md:text-[22px] xl:text-[24px] leading-[24px] md:leading-[28px] xl:leading-[32px] text-start">
-                {card.title}
+              <h3 className="font-bold text-[20px] md:text-[22px] xl:text-[24px] leading-[24px] md:leading-[28px] xl:leading-[32px] text-start">
+                {card?.title}
               </h3>
-              <p className="text-[#FFFFFFB2] text-[12px] md:text-[14px] xl:text-[16px] leading-[16px] md:leading-[20px] xl:leading-[24px] font-normal text-start mt-[15px]">
-                {card.description}
+              <p className="text-[12px] md:text-[14px] xl:text-[16px] leading-[16px] md:leading-[20px] xl:leading-[24px] font-normal text-start mt-[15px]">
+                {card?.description}
               </p>
               <div className="flex flex-row justify-end">
                 <img
-                  src={card.logoPath}
+                  src={card?.logoPath}
                   alt="logo"
                   className="w-[50px] md:w-[70px] xl:w-[80px] h-[50px] md:h-[70px] xl:h-[80px] mt-[20px]"
                 />
@@ -407,17 +395,21 @@ const Landing = () => {
           </h2>
 
           <div className="flex flex-col gap-4 w-full">
-            {questions.map((item, i) => (
+            {questions?.map((item, i) => (
               <div
                 key={i}
-                className="bg-[#1f1f1f] text-white rounded-xl shadow-md transition-all"
+                className={`${
+                  theme
+                    ? "bg-[#1f1f1f] text-white"
+                    : "bg-white text-gray-800 border border-gray-300"
+                } rounded-xl shadow-md transition-all`}
               >
                 <button
                   className="w-full flex justify-between items-center px-6 py-4 text-left focus:outline-none"
                   onClick={() => toggle(i)}
                 >
                   <span className="text-[17px] font-medium">
-                    {item.question}
+                    {item?.question}
                   </span>
                   <motion.div
                     initial={{ rotate: 0 }}
@@ -436,13 +428,13 @@ const Landing = () => {
                 <AnimatePresence>
                   {selected === i && (
                     <motion.div
-                      className="px-6 pb-4 text-[#d4d4d8] text-[15px]"
+                      className="px-6 pb-4 text-[15px]"
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.4 }}
                     >
-                      <div>{item.answer}</div>
+                      <div>{item?.answer}</div>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -452,7 +444,7 @@ const Landing = () => {
         </div>
         <div
           className={`mt-[150px] grid grid-cols-4 ${
-            theme ? "text-[#FFFFFFB2]" : "text-black"
+            theme ? "text-[#FFFFFFB2]" : "text-gray-700"
           } gap-[30px]`}
         >
           <div className="flex flex-col text-[10px] md:text-[12px] xl:text-[14px] leading-[16px] md:leading-[18px] xl:leading-[20px] font-normal">
@@ -491,7 +483,13 @@ const Landing = () => {
             <h3 className="underline mt-[10px]">{t("ad_choices")}</h3>
           </div>
         </div>
-        <div className="w-fit mt-[40px] mb-[30px] py-[5px] px-[30px] border-[1px] border-[#808080B2]">
+        <div
+          className={`w-fit mt-[40px] mb-[30px] py-[5px] px-[30px] border-[1px]  ${
+            theme
+              ? "border-[#808080B2] text-white"
+              : "border-gray-300 text-gray-800 bg-white"
+          }`}
+        >
           <h3 className="text-[16px] leading-[24px] font-normal">{fullName}</h3>
         </div>
       </div>

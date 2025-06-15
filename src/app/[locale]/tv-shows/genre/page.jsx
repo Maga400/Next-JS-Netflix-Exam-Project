@@ -145,7 +145,6 @@ const Genre = () => {
       className={`w-full min-h-screen transition-colors duration-300 px-4 py-6 sm:px-6 sm:py-8 md:px-12 md:py-10 lg:px-20 lg:py-12 xl:px-[90px] xl:py-[30px] 
       ${theme ? "bg-black text-white" : "bg-white text-black"}`}
     >
-      {/* Header */}
       <div className="flex flex-row justify-between">
         <button
           onClick={() => {

@@ -34,9 +34,6 @@ const Movie = ({ params }) => {
   const [loading2, setLoading2] = useState(false);
   const [activeLoadingId, setActiveLoadingId] = useState(null);
   const { addId, removeLastId, getLastId, ids,getPreviousToLastId } = useGoBackStore.getState();
-  // const pathname = usePathname();
-  // const normalize = (url) => decodeURIComponent(url);
-  // const currentPath = normalize(pathname);
 
   const scrollLeft = () => {
     scrollRef.current.scrollBy({ left: -300, behavior: "smooth" });
@@ -201,7 +198,6 @@ const Movie = ({ params }) => {
         ) : null}
       </div>
 
-      {/* Movie Info */}
       <div className="px-[20px] md:px-[60px] xl:px-[40px] py-[20px]">
         {movieLoading ? (
           <div className="w-full h-[200px] flex items-center justify-center">
@@ -246,7 +242,7 @@ const Movie = ({ params }) => {
                 <button
                   onClick={() => {
                     setLoading2(true);
-                    router.push(`/${locale}/movies/${movie.id}/more-info`);
+                    router.push(`/${locale}/movies/${movie?.id}/more-info`);
                   }}
                   className="hover:cursor-pointer rounded-md group relative inline-flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-3 lg:px-8 lg:py-3 text-xs sm:text-sm lg:text-baserounded-full font-medium transition-all duration-300 bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700 shadow-md hover:shadow-xl"
                 >
@@ -270,7 +266,6 @@ const Movie = ({ params }) => {
           </>
         )}
 
-        {/* Similar Movies */}
         <div className="mt-[40px]">
           <h2 className="text-[20px] md:text-[22px] xl:text-[24px] font-normal mb-3">
             {t("similar_movies")}
@@ -280,22 +275,22 @@ const Movie = ({ params }) => {
             <div className="w-full h-[150px] flex items-center justify-center">
               <Loading />
             </div>
-          ) : similars && similars.length > 0 ? (
+          ) : similars && similars?.length > 0 ? (
             <>
               <div className="hidden xl:grid xl:grid-cols-7 gap-[15px] w-full h-full">
-                {similars.map((similar) => (
+                {similars?.map((similar) => (
                   <div
-                    key={similar.id}
+                    key={similar?.id}
                     onClick={() => handleMovieClick(similar?.id)}
                     className="relative cursor-pointer w-full h-[300px]"
                   >
                     <Image
                       src={
-                        similar.poster_path
-                          ? `${process.env.NEXT_PUBLIC_BASE_IMAGE_URL}${similar.poster_path}`
+                        similar?.poster_path
+                          ? `${process.env.NEXT_PUBLIC_BASE_IMAGE_URL}${similar?.poster_path}`
                           : "/images/defaultPoster.png"
                       }
-                      alt={similar.title}
+                      alt={similar?.title || "Similar Movie"}
                       className={`w-full h-full object-cover rounded-[10px] border-[1px] ${
                         theme ? "border-white" : "border-gray-700"
                       }`}
@@ -318,21 +313,21 @@ const Movie = ({ params }) => {
               >
                 {similars.map((similar) => (
                   <div
-                    key={similar.id}
+                    key={similar?.id}
                     className={`relative flex-shrink-0 w-[160px] md:w-[200px] h-[240px] md:h-[250px] cursor-pointer rounded-[10px] border-[1px] ${
                       theme
                         ? "bg-[#1F1F1F] border-white"
                         : "bg-[#F4F4F5] border-gray-700"
                     }`}
-                    onClick={() => handleMovieClick(similar.id)}
+                    onClick={() => handleMovieClick(similar?.id)}
                   >
                     <Image
                       src={
-                        similar.poster_path
-                          ? `${process.env.NEXT_PUBLIC_BASE_IMAGE_URL}${similar.poster_path}`
+                        similar?.poster_path
+                          ? `${process.env.NEXT_PUBLIC_BASE_IMAGE_URL}${similar?.poster_path}`
                           : "/images/defaultPoster.png"
                       }
-                      alt={similar.title}
+                      alt={similar?.title || "Similar Movie"}
                       className="w-full h-full object-cover rounded-[10px]"
                       layout="fill"
                       objectFit="cover"

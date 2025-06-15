@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useRef, useState } from "react";
 import Header from "@/components/Header";
 import { useRouter } from "next/navigation";
@@ -9,6 +10,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { ArrowLeftCircle, ArrowRightCircle } from "lucide-react";
 import Image from "next/image";
 import { useGoBackTvStore } from "../../../../store/goBackTvStore";
+import { useSearchParams } from "next/navigation";
 
 const TvShows = () => {
   const t = useTranslations("Other");
@@ -21,9 +23,11 @@ const TvShows = () => {
   const theme = useThemeStore((state) => state.theme);
   const scrollRef = useRef(null);
   const [activeLoadingId, setActiveLoadingId] = useState(null);
-  const [loading2,setLoading2] = useState(false);
-  const [loading3,setLoading3] = useState(false);
+  const [loading2, setLoading2] = useState(false);
+  const [loading3, setLoading3] = useState(false);
   const { addId } = useGoBackTvStore.getState();
+  const searchParams = useSearchParams();
+  const query = searchParams.get("query") || "";
 
   const getAllTvShows = async (page = 1) => {
     setIsLoading(true);
@@ -44,10 +48,36 @@ const TvShows = () => {
     }
   };
 
+  const searchTvShows = async (page = 1) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_IP_URL}/Search/tv/${page}?query=${query}&lang=${locale}&count=10`
+      );
+      setTvShows([]);
+      if (response.ok) {
+        const data = await response.json();
+        setTvShows(data.tvShows);
+        setTotalPages(data.totalPages);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handlePageChange = (newPage) => {
-    if (newPage >= 1 && newPage <= totalPages && newPage !== page) {
-      setPage(newPage);
-      getAllTvShows(newPage);
+    if (query === "" || query === null) {
+      if (newPage >= 1 && newPage <= totalPages && newPage !== page) {
+        setPage(newPage);
+        getAllTvShows(newPage);
+      }
+    } else {
+      if (newPage >= 1 && newPage <= totalPages && newPage !== page) {
+        setPage(newPage);
+        searchTvShows(newPage);
+      }
     }
   };
 
@@ -71,8 +101,30 @@ const TvShows = () => {
   };
 
   useEffect(() => {
-    getAllTvShows(page);
+    if (query === "") {
+      setPage(1);
+      setTotalPages(1);
+      getAllTvShows(1);
+    }
+    if (query !== "") {
+      setPage(1);
+      setTotalPages(1);
+      searchTvShows(1);
+    }
   }, []);
+
+  useEffect(() => {
+    if (query !== "") {
+      setPage(1);
+      setTotalPages(1);
+      searchTvShows(1);
+    }
+    if (query === "") {
+      setPage(1);
+      setTotalPages(1);
+      getAllTvShows(1);
+    }
+  }, [query]);
 
   const handleTvShowClick = (id) => {
     setActiveLoadingId(id);
@@ -94,7 +146,10 @@ const TvShows = () => {
         <div className="mt-[70px]">
           <div className="flex gap-4 mb-6">
             <button
-              onClick={() => {setLoading2(true); router.push(`/${locale}/tv-shows/genre`)}}
+              onClick={() => {
+                setLoading2(true);
+                router.push(`/${locale}/tv-shows/genre`);
+              }}
               className={`px-4 py-2 rounded-lg font-semibold transition 
       ${
         theme
@@ -105,7 +160,10 @@ const TvShows = () => {
               {loading2 ? <Loading2 /> : t("genre")}
             </button>
             <button
-              onClick={() => {setLoading3(true); router.push(`/${locale}/tv-shows/category`)}}
+              onClick={() => {
+                setLoading3(true);
+                router.push(`/${locale}/tv-shows/category`);
+              }}
               className={`px-4 py-2 rounded-lg font-semibold transition 
       ${
         theme
@@ -150,7 +208,6 @@ const TvShows = () => {
             ))}
           </div>
 
-          {/* Arrows for Mobile */}
           <div className="flex xl:hidden justify-between items-center mt-[20px]">
             <button onClick={scrollLeft}>
               <ArrowLeftCircle size={32} />
@@ -160,7 +217,6 @@ const TvShows = () => {
             </button>
           </div>
 
-          {/* Desktop Grid */}
           <div className="hidden xl:grid mt-[30px] grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
             {tvShows?.map((tv) => (
               <div
@@ -194,7 +250,6 @@ const TvShows = () => {
         </div>
       )}
 
-      {/* Pagination */}
       <div className="flex justify-center items-center mt-12 gap-2 flex-wrap">
         <button
           onClick={() => handlePageChange(1)}

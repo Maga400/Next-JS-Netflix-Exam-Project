@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useRef, useState } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
@@ -171,7 +172,6 @@ const TvShow = ({ params }) => {
         </div>
       </div>
 
-      {/* Trailer */}
       <div className="px-[20px] md:px-[60px] xl:px-[320px] pt-[10px] w-full h-fit">
         {trailerLoading ? (
           <div className="w-full h-[300px] flex items-center justify-center">
@@ -191,7 +191,6 @@ const TvShow = ({ params }) => {
         ) : null}
       </div>
 
-      {/* TV Show Info */}
       <div className="px-[20px] md:px-[60px] xl:px-[40px] py-[20px]">
         {tvShowLoading ? (
           <div className="w-full h-[200px] flex items-center justify-center">
@@ -236,7 +235,7 @@ const TvShow = ({ params }) => {
                 <button
                   onClick={() => {
                     setLoading2(true);
-                    router.push(`/${locale}/tv-shows/${tvShow.id}/more-info`);
+                    router.push(`/${locale}/tv-shows/${tvShow?.id}/more-info`);
                   }}
                   className="hover:cursor-pointer rounded-md group relative inline-flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-3 lg:px-8 lg:py-3 text-xs sm:text-sm lg:text-baserounded-full font-medium transition-all duration-300 bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700 shadow-md hover:shadow-xl"
                 >
@@ -260,7 +259,6 @@ const TvShow = ({ params }) => {
           </>
         )}
 
-        {/* Similar Shows */}
         <div className="mt-[40px]">
           <h2 className="text-[20px] md:text-[22px] xl:text-[24px] font-normal mb-3">
             {t("similar_tv_shows")}
@@ -270,22 +268,22 @@ const TvShow = ({ params }) => {
             <div className="w-full h-[150px] flex items-center justify-center">
               <Loading />
             </div>
-          ) : similars && similars.length > 0 ? (
+          ) : similars && similars?.length > 0 ? (
             <>
               <div className="hidden xl:grid xl:grid-cols-7 gap-[15px]">
-                {similars.map((similar) => (
+                {similars?.map((similar) => (
                   <div
-                    key={similar.id}
+                    key={similar?.id}
                     onClick={() => handleTvShowClick(similar?.id)}
                     className="cursor-pointer relative w-full h-[300px]"
                   >
                     <Image
                       src={
-                        similar.poster_path
-                          ? `${process.env.NEXT_PUBLIC_BASE_IMAGE_URL}${similar.poster_path}`
+                        similar?.poster_path
+                          ? `${process.env.NEXT_PUBLIC_BASE_IMAGE_URL}${similar?.poster_path}`
                           : "/images/defaultPoster.png"
                       }
-                      alt={similar.name}
+                      alt={similar?.name || "Similar TV Show"}
                       className={`w-full h-full object-cover rounded-[10px] border-[1px] ${
                         theme ? "border-white" : "border-gray-700"
                       }`}
@@ -306,19 +304,19 @@ const TvShow = ({ params }) => {
                   theme ? "bg-black" : "bg-white"
                 } custom-scroll xl:hidden flex gap-[15px] md:gap-[20px] overflow-x-auto whitespace-nowrap scroll-smooth`}
               >
-                {similars.map((similar) => (
+                {similars?.map((similar) => (
                   <div
-                    key={similar.id}
+                    key={similar?.id}
                     className="relative flex-shrink-0 w-[160px] md:w-[200px] h-[240px] md:h-[250px]"
                     onClick={() => handleTvShowClick(similar?.id)}
                   >
                     <Image
                       src={
-                        similar.poster_path
-                          ? `${process.env.NEXT_PUBLIC_BASE_IMAGE_URL}${similar.poster_path}`
+                        similar?.poster_path
+                          ? `${process.env.NEXT_PUBLIC_BASE_IMAGE_URL}${similar?.poster_path}`
                           : "/images/defaultPoster.png"
                       }
-                      alt={similar.name}
+                      alt={similar?.name || "Similar TV Show"}
                       className={`w-full h-full object-cover rounded-[10px] border-[1px] ${
                         theme ? "border-white" : "border-gray-700"
                       }`}

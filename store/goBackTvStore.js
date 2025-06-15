@@ -22,8 +22,10 @@ export const useGoBackTvStore = create(
 
       getPreviousToLastId: () => {
         const { ids } = get();
-        const count = ids.length-2;
-        return ids.length > 0 ? ids[count == -1 ? ids[0] : ids.length - 2] : null;
+        const count = ids.length - 2;
+        return ids.length > 0
+          ? ids[count == -1 ? ids[0] : ids.length - 2]
+          : null;
       },
     }),
     {

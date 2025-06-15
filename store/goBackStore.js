@@ -20,11 +20,12 @@ export const useGoBackStore = create(
         return ids.length > 0 ? ids[ids.length - 1] : null;
       },
 
-      // ✅ En sondan bir önceki ID'yi döner
       getPreviousToLastId: () => {
         const { ids } = get();
-        const count = ids.length-2;
-        return ids.length > 0 ? ids[count == -1 ? ids[0] : ids.length - 2] : null;
+        const count = ids.length - 2;
+        return ids.length > 0
+          ? ids[count == -1 ? ids[0] : ids.length - 2]
+          : null;
       },
     }),
     {

@@ -66,7 +66,10 @@ const MoreInfo = () => {
     >
       <div className="flex flex-row justify-between items-center gap-4 mb-8">
         <button
-          onClick={() => {setLoading2(true); router.push(`/${locale}/tv-shows/${id}`)}}
+          onClick={() => {
+            setLoading2(true);
+            router.push(`/${locale}/tv-shows/${id}`);
+          }}
           className={`flex items-center gap-2 px-4 py-2 rounded-md shadow-sm text-sm md:text-base transition-colors ${
             theme
               ? "bg-neutral-800 hover:bg-neutral-700 text-white"

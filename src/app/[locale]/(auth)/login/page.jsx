@@ -51,8 +51,13 @@ const Login = () => {
       const resData = await response.json();
 
       if (response.ok) {
-        // Cookie.set("password", resData.password, { expires: 7, path: "/" });
-        Cookie.set("token", resData.token, { expires: 7, path: "/" });
+        const inThreeHours = new Date(
+          new Date().getTime() + 3 * 60 * 60 * 1000
+        );
+        Cookie.set("token", resData.token, {
+          expires: inThreeHours,
+          path: "/",
+        });
         router.push(`/${locale}/home`);
       } else {
         toast.error(resData.message || t("something_went_wrong"));
@@ -79,7 +84,7 @@ const Login = () => {
         />
         <div
           className={`${
-            theme ? "bg-[#000000B2]" : "bg-[#666666]"
+            theme ? "bg-[#000000B2]" : "bg-[#4d4d4d]"
           } opacity-[50%] w-full h-[750px] absolute hidden md:block`}
         ></div>
         <div className="w-full absolute top-[25px] px-[25px] xl:px-[160px] flex flex-row justify-between items-center">
@@ -90,7 +95,9 @@ const Login = () => {
             }}
           >
             {loading3 ? (
-              <div className="flex justify-center items-center"><Loading bg="border-white" /></div>
+              <div className="flex justify-center items-center">
+                <Loading bg="border-white" />
+              </div>
             ) : (
               <img
                 src="/icons/netflix-logo.png"
@@ -106,7 +113,7 @@ const Login = () => {
         </div>
         <div
           className={`w-full md:w-[480px] ${
-            theme ? "md:bg-[#000000B2]" : "md:bg-[#FFFFFFB2]"
+            theme ? "md:bg-[#000000B2]" : "md:bg-[#E5E5E5B2]"
           } absolute top-0 mt-[100px] md:mt-[110px] xl:mt-[160px] px-[20px] py-[0px] md:px-[70px] md:py-[50px]`}
         >
           <h2 className="text-[32px] font-bold leading-[100%]">
@@ -183,7 +190,7 @@ const Login = () => {
         </div>
         <div
           className={`w-full absolute bottom-[0px] h-[50px] ${
-            theme ? "bg-[#000000B2]" : "bg-[#FFFFFFB2]"
+            theme ? "bg-[#000000B2]" : "bg-[#E5E5E5B2]"
           }`}
         ></div>
       </div>

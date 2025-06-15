@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useRef, useState } from "react";
 import Header from "@/components/Header";
 import { useRouter } from "next/navigation";
@@ -8,7 +9,8 @@ import { useLocale, useTranslations } from "next-intl";
 import { ArrowLeftCircle, ArrowRightCircle } from "lucide-react";
 import Image from "next/image";
 import Loading2 from "../../../components/Loading2";
-import {useGoBackStore} from "../../../../store/goBackStore";
+import { useGoBackStore } from "../../../../store/goBackStore";
+import { useSearchParams } from "next/navigation";
 
 const Movies = () => {
   const t = useTranslations("Other");
@@ -24,6 +26,8 @@ const Movies = () => {
   const [loading2, setLoading2] = useState(false);
   const [loading3, setLoading3] = useState(false);
   const { addId } = useGoBackStore.getState();
+  const searchParams = useSearchParams();
+  const query = searchParams.get("query") || "";
 
   const getAllMovies = async (page = 1) => {
     setIsLoading(true);
@@ -45,9 +49,16 @@ const Movies = () => {
   };
 
   const handlePageChange = (newPage) => {
-    if (newPage >= 1 && newPage <= totalPages && newPage !== page) {
-      setPage(newPage);
-      getAllMovies(newPage);
+    if (query === "" || query === null) {
+      if (newPage >= 1 && newPage <= totalPages && newPage !== page) {
+        setPage(newPage);
+        getAllMovies(newPage);
+      }
+    } else {
+      if (newPage >= 1 && newPage <= totalPages && newPage !== page) {
+        setPage(newPage);
+        searchMovies(newPage);
+      }
     }
   };
 
@@ -70,9 +81,50 @@ const Movies = () => {
     }
   };
 
+  const searchMovies = async (page = 1) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_IP_URL}/Search/movie/${page}?query=${query}&lang=${locale}&count=10`
+      );
+      setMovies([]);
+      if (response.ok) {
+        const data = await response.json();
+        setMovies(data.movies);
+        setTotalPages(data.totalPages);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    getAllMovies(page);
+    if (query === "") {
+      setPage(1);
+      setTotalPages(1);
+      getAllMovies(1);
+    }
+    if (query !== "") {
+      setPage(1);
+      setTotalPages(1);
+      searchMovies(1);
+    }
   }, []);
+
+  useEffect(() => {
+    if (query !== "") {
+      setTotalPages(1);
+      setPage(1);
+      searchMovies(1);
+    }
+    if (query === "") {
+      setTotalPages(1);
+      setPage(1);
+      getAllMovies(1);
+    }
+  }, [query]);
 
   const handleMovieClick = (id) => {
     addId(id);
@@ -94,22 +146,30 @@ const Movies = () => {
         <div className="mt-[70px]">
           <div className="flex gap-4 mb-6">
             <button
-              onClick={() => { setLoading2(true); router.push(`/${locale}/movies/genre`) }}
+              onClick={() => {
+                setLoading2(true);
+                router.push(`/${locale}/movies/genre`);
+              }}
               className={`px-4 py-2 rounded-lg font-semibold transition 
-      ${theme
-                  ? "bg-gray-800 text-white hover:bg-gray-600"
-                  : "bg-gray-200 text-black hover:bg-gray-300"
-                }`}
+      ${
+        theme
+          ? "bg-gray-800 text-white hover:bg-gray-600"
+          : "bg-gray-200 text-black hover:bg-gray-300"
+      }`}
             >
               {loading2 ? <Loading2 /> : t("genre")}
             </button>
             <button
-              onClick={() => { setLoading3(true); router.push(`/${locale}/movies/category`) }}
+              onClick={() => {
+                setLoading3(true);
+                router.push(`/${locale}/movies/category`);
+              }}
               className={`px-4 py-2 rounded-lg font-semibold transition 
-      ${theme
-                  ? "bg-gray-800 text-white hover:bg-gray-600"
-                  : "bg-gray-200 text-black hover:bg-gray-300"
-                }`}
+      ${
+        theme
+          ? "bg-gray-800 text-white hover:bg-gray-600"
+          : "bg-gray-200 text-black hover:bg-gray-300"
+      }`}
             >
               {loading3 ? <Loading2 /> : t("category")}
             </button>
@@ -117,8 +177,9 @@ const Movies = () => {
 
           <div
             ref={scrollRef}
-            className={`custom-scroll xl:hidden flex gap-[15px] md:gap-[20px] overflow-x-auto whitespace-nowrap scroll-smooth ${theme ? "bg-black" : "bg-white"
-              }`}
+            className={`custom-scroll xl:hidden flex gap-[15px] md:gap-[20px] overflow-x-auto whitespace-nowrap scroll-smooth ${
+              theme ? "bg-black" : "bg-white"
+            }`}
           >
             {movies?.map((movie) => (
               <div
@@ -126,21 +187,20 @@ const Movies = () => {
                 onClick={() => handleMovieClick(movie?.id)}
                 className="relative flex-shrink-0 w-[160px] md:w-[200px] h-[240px] md:h-[250px] cursor-pointer"
               >
-                {/* Film posteri */}
                 <Image
                   src={
                     movie?.poster_path
                       ? `${process.env.NEXT_PUBLIC_BASE_IMAGE_URL}${movie?.poster_path}`
                       : "/images/defaultPoster.png"
                   }
-                  alt={movie?.title}
-                  className={`w-full h-full object-cover rounded-[10px] border-[1px] ${theme ? "border-white" : "border-gray-700"
-                    }`}
+                  alt={movie?.title || "Movie Poster"}
+                  className={`w-full h-full object-cover rounded-[10px] border-[1px] ${
+                    theme ? "border-white" : "border-gray-700"
+                  }`}
                   layout="fill"
                   objectFit="cover"
                 />
 
-                {/* Spinner sadece aktif id eşleştiğinde görünür */}
                 {activeLoadingId === movie?.id && (
                   <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-10 rounded-[10px]">
                     <Loading2 bg="border-white" />
@@ -150,7 +210,6 @@ const Movies = () => {
             ))}
           </div>
 
-          {/* Arrows for Mobile */}
           <div className="flex xl:hidden justify-between items-center mt-[20px]">
             <button onClick={scrollLeft}>
               <ArrowLeftCircle size={32} />
@@ -160,7 +219,6 @@ const Movies = () => {
             </button>
           </div>
 
-          {/* Desktop Grid */}
           <div className="hidden xl:grid mt-[30px] grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
             {movies?.map((movie) => (
               <div
@@ -174,12 +232,11 @@ const Movies = () => {
                       ? `${process.env.NEXT_PUBLIC_BASE_IMAGE_URL}${movie?.poster_path}`
                       : "/images/defaultPoster.png"
                   }
-                  alt={movie?.title}
+                  alt={movie?.title || "Movie Poster"}
                   fill
                   className="object-cover group-hover:brightness-75 transition duration-300"
                 />
 
-                {/* Sadece seçilen filme spinner ekle */}
                 {activeLoadingId === movie?.id && (
                   <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-10">
                     <Loading2 bg="border-white" />
@@ -217,15 +274,15 @@ const Movies = () => {
         }
       `}</style>
 
-      {/* Pagination */}
       <div className="flex justify-center items-center mt-12 gap-2 flex-wrap">
         <button
           onClick={() => handlePageChange(1)}
           disabled={page === 1}
           className={`px-3 py-2 rounded-lg font-medium transition 
-            ${theme
-              ? "bg-gray-700 text-white hover:bg-gray-600"
-              : "bg-gray-200 text-black hover:bg-gray-300"
+            ${
+              theme
+                ? "bg-gray-700 text-white hover:bg-gray-600"
+                : "bg-gray-200 text-black hover:bg-gray-300"
             } disabled:opacity-40 disabled:cursor-not-allowed`}
         >
           «
@@ -234,9 +291,10 @@ const Movies = () => {
           onClick={() => handlePageChange(page - 1)}
           disabled={page === 1}
           className={`px-3 py-2 rounded-lg font-medium transition 
-            ${theme
-              ? "bg-gray-700 text-white hover:bg-gray-600"
-              : "bg-gray-200 text-black hover:bg-gray-300"
+            ${
+              theme
+                ? "bg-gray-700 text-white hover:bg-gray-600"
+                : "bg-gray-200 text-black hover:bg-gray-300"
             } disabled:opacity-40 disabled:cursor-not-allowed`}
         >
           ←
@@ -246,11 +304,12 @@ const Movies = () => {
             key={num}
             onClick={() => handlePageChange(num)}
             className={`px-4 py-2 rounded-lg font-semibold transition 
-              ${page === num
-                ? theme
-                  ? "bg-white text-black"
-                  : "bg-black text-white"
-                : theme
+              ${
+                page === num
+                  ? theme
+                    ? "bg-white text-black"
+                    : "bg-black text-white"
+                  : theme
                   ? "bg-gray-800 text-white hover:bg-gray-600"
                   : "bg-gray-100 text-black hover:bg-gray-300"
               }`}
@@ -262,9 +321,10 @@ const Movies = () => {
           onClick={() => handlePageChange(page + 1)}
           disabled={page === totalPages}
           className={`px-3 py-2 rounded-lg font-medium transition 
-            ${theme
-              ? "bg-gray-700 text-white hover:bg-gray-600"
-              : "bg-gray-200 text-black hover:bg-gray-300"
+            ${
+              theme
+                ? "bg-gray-700 text-white hover:bg-gray-600"
+                : "bg-gray-200 text-black hover:bg-gray-300"
             } disabled:opacity-40 disabled:cursor-not-allowed`}
         >
           →
@@ -273,9 +333,10 @@ const Movies = () => {
           onClick={() => handlePageChange(totalPages)}
           disabled={page === totalPages}
           className={`px-3 py-2 rounded-lg font-medium transition 
-            ${theme
-              ? "bg-gray-700 text-white hover:bg-gray-600"
-              : "bg-gray-200 text-black hover:bg-gray-300"
+            ${
+              theme
+                ? "bg-gray-700 text-white hover:bg-gray-600"
+                : "bg-gray-200 text-black hover:bg-gray-300"
             } disabled:opacity-40 disabled:cursor-not-allowed`}
         >
           »

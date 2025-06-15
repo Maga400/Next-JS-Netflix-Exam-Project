@@ -28,7 +28,11 @@ const ThemeToggle = () => {
       <div
         onClick={handleCircleClick}
         className={`absolute rounded-full bg-white flex items-center justify-center transition-all duration-300 cursor-pointer
-          ${theme ? "left-[30px] sm:left-[36px] md:left-[42px] xl:left-[48px]" : "left-[3px]"}
+          ${
+            theme
+              ? "left-[30px] sm:left-[36px] md:left-[42px] xl:left-[48px]"
+              : "left-[3px]"
+          }
           top-[3px]
           w-[24px] h-[24px]
           sm:w-[28px] sm:h-[28px]
